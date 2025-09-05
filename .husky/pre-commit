@@ -1,1 +1,1 @@
-npx tsc --noEmit && pnpm lint-staged && pnpm test
+npx tsc --noEmit && pnpm lint-staged
