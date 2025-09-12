@@ -27,14 +27,62 @@ npx start-ts-by
   ...
 ```
 
-### 直接指定模板
+### 非互動模式
 
+#### 基本用法
 ```sh
+# 使用 --no-interaction (--ni) 旗標
+npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
+npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
+
+# 舊版 --skip-prompt 旗標（已棄用，建議使用 --no-interaction）
 npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
-# 支援自訂 branch/tag、子目錄
-npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir
-npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates
-npx start-ts-by my-app -t ./my-template-folder/subdir
+```
+
+#### 進階非互動模式與變數
+```sh
+# 使用 --vars 設定內嵌變數
+npx start-ts-by my-app --ni --vars name=my-app,template=user/repo
+npx start-ts-by my-app --ni --vars "removeList[0].field=README.md,removeList[0].isRemove=true"
+
+# 使用 --vars-file 讀取設定檔
+npx start-ts-by my-app --ni --vars-file ./project.vars
+
+# 結合多個來源（--vars 會覆蓋 --vars-file）
+npx start-ts-by my-app --ni --vars-file ./base.vars --vars template=user/custom-repo
+```
+
+#### 變數檔案格式 (.vars)
+建立包含 key=value 對的 `.vars` 檔案：
+
+```bash
+# project.vars
+name=my-awesome-app
+template=user/repo
+
+# removeList 巢狀變數
+removeList[0].field=README.md
+removeList[0].isRemove=true
+removeList[1].field=.github
+removeList[1].isRemove=false
+
+# 執行選項
+execList[0].key=gitInit
+execList[0].command=git init
+execList[0].isExec=true
+
+# 檔案內容（@ 前綴從檔案讀取）
+# token=@./secret-token.txt
+
+# 包含其他變數檔案
+# include: ./common.vars
+```
+
+#### 模板來源支援 branch/子目錄
+```sh
+npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir --ni
+npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates --ni
+npx start-ts-by my-app -t ./my-template-folder/subdir --ni
 ```
 
 ---
@@ -77,13 +125,46 @@ Usage: start-ts-by [options] [command]
 Start TypeScript project by git repo or local folder templates
 
 Options:
-  -V, --version            顯示版本
-  -h, --help               顯示說明
+  -V, --version                     顯示版本號
+  -h, --help                        顯示說明
 
 Commands:
-  create [options] [name]  從模板建立新專案 (預設)
-  help [command]           顯示說明文件
+  create [options] [name]           從模板建立新專案 (預設)
+  help [command]                    顯示說明文件
+
+# create 指令選項：
+npx start-ts-by create --help
+
+Options:
+  -t, --template <repo>             模板來源 (user/repo, git@domain:group/repo.git, ./local-folder)
+  --skip-prompt                     跳過提示（已棄用，建議使用 --no-interaction）
+  --no-interaction, --ni            非互動模式，跳過所有提示
+  --yes, -y                         使用預設值並跳過確認
+  --vars <pairs...>                 key=value 格式的變數（可重複使用）
+  --vars-file <path>                變數檔案路徑（非 JSON，支援包含）
+  --strict                          嚴格模式：將重複鍵和型別衝突視為錯誤
+  --rm <files...>                   建立專案後要移除的檔案/資料夾
+  --no-husky                        移除 .husky
+  --github                          保留 .github/workflows
+  --git-init                        建立後執行 git init
+  --npm-install                     建立後執行 npm install
+  -h, --help                        顯示說明
+
 ```
+
+### 變數優先序（由高到低）
+1. `--vars` 命令列參數
+2. `--vars-file` 檔案內容
+3. 個別旗標（`-t`, `--rm` 等）
+4. 環境變數
+5. 互動式輸入
+6. 預設值
+
+### 錯誤處理
+- 非互動模式需要 `name` 和 `template` 參數
+- 缺少必要參數時以退出碼 2 結束
+- 檔案讀取錯誤和解析失敗會提供具體錯誤訊息
+- `--strict` 模式將重複鍵和型別衝突視為錯誤（預設：警告）
 
 ---
 
