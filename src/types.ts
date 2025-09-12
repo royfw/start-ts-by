@@ -72,3 +72,39 @@ export type PromptCheckArgsType = {
   key: string;
   message: string;
 };
+
+// Variable parsing related types
+export type ParsedVarsType = {
+  [key: string]: string | number | boolean | ParsedVarsType | ParsedVarsType[];
+};
+
+export type VarsParseResult = {
+  vars: ParsedVarsType;
+  errors: string[];
+};
+
+export type VarsFileInclude = {
+  path: string;
+  includedFrom?: string;
+};
+
+export type VarsMergeOptions = {
+  strict?: boolean;
+};
+
+export type VarsMergeResult = {
+  merged: ParsedVarsType;
+  warnings: string[];
+  errors: string[];
+};
+
+// Extended ActionArgsType for non-interactive mode support
+export type ExtendedActionArgsType = ActionArgsType & {
+  noInteraction?: boolean;
+  ni?: boolean;
+  yes?: boolean;
+  y?: boolean;
+  vars?: string[];
+  varsFile?: string;
+  strict?: boolean;
+};
