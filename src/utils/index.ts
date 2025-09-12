@@ -7,3 +7,6 @@ export * from './execSyncByList';
 export * from './parseTemplateSource';
 export * from './templateToLocal';
 export * from './pattern';
+export * from './varsParser';
+export * from './varsFile';
+export * from './varsMerge';
