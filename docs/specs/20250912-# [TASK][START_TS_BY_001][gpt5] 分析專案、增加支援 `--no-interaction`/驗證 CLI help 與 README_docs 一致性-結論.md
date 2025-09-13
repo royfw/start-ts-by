@@ -113,3 +113,74 @@ Commands:
 - 遵循「文件為主」的對齊原則
 
 此驗證確保了 CLI 工具的文件準確性與用戶體驗一致性。
+
+## [2025-09-13][START_TS_BY_001-5][gpt5][Code] 分析專案、增加支援 `--no-interaction` - 驗證 CLI help 與 README_docs 一致性（文件修正）
+
+### 已完成對齊的總結
+
+本次子任務成功完成以下修正，確保 CLI `--help` 輸出與文件 100% 一致：
+
+1. **README.md 修正**：
+   - Commands 區塊格式對齊（空白字元統一）
+   - --vars 選項添加 `(default: [])` 說明
+
+2. **docs/README.zh-TW.md 修正**：
+   - Commands 區塊統一使用英文格式（與 CLI 輸出一致）
+   - --vars 選項添加 `(default: [])` 說明
+
+### 再次執行 `--help` 的確認結論
+
+✅ **主命令輸出**：與文件完全一致
+✅ **create 子命令輸出**：與文件完全一致
+✅ **所有選項格式**：字距、大小寫、括號、Default 註記位置均完全一致
+
+**一致性驗證結果**：CLI `--help` 輸出與 README.md、docs/README.zh-TW.md 文件內容已達到 100% 一致。
+
+### 風險與後續建議
+
+1. **文件同步風險**：
+   - 若未來修改 CLI 選項描述，需同步更新兩份 README 文件
+   - 建議在 CI/CD 中加入 CLI help 與文件一致性檢查
+
+2. **維護建議**：
+   - 優先以實際 CLI 輸出為準進行文件更新
+   - 保持中英文版本的描述格式一致性
+
+## Git 提交說明
+
+### 中文版提交訊息
+```bash
+# 建議的 git add 與 commit 順序
+git add README.md docs/README.zh-TW.md
+git add "docs/specs/20250912-# [TASK][START_TS_BY_001][gpt5] 分析專案、增加支援 \`--no-interaction\`/驗證 CLI help 與 README_docs 一致性-過程.md"
+git add "docs/specs/20250912-# [TASK][START_TS_BY_001][gpt5] 分析專案、增加支援 \`--no-interaction\`/驗證 CLI help 與 README_docs 一致性-結論.md"
+
+git commit -m "docs: 修正 CLI help 與 README 文件一致性
+
+- 統一 Commands 區塊格式與 CLI 輸出完全一致
+- 補充 --vars 選項的 (default: []) 說明
+- 中文版 README 統一使用英文 CLI 格式
+- 更新驗證 CLI help 一致性規格文件
+
+修正範圍:
+- README.md: Commands 格式、--vars default 值
+- docs/README.zh-TW.md: Commands 格式統一、--vars default 值
+- 規格文件: 補充本次修正過程與結論"
+```
+
+### 英文版提交訊息 (Conventional Commits)
+```bash
+git commit -m "docs: align CLI help output with README documentation
+
+- Standardize Commands block formatting to match CLI output exactly
+- Add (default: []) notation to --vars option description
+- Unify Chinese README to use English CLI format for consistency
+- Update CLI help consistency verification spec documents
+
+Scope:
+- README.md: Commands formatting, --vars default value
+- docs/README.zh-TW.md: Commands formatting, --vars default value
+- spec docs: Add current task process and conclusion records
+
+Fixes: CLI help and documentation consistency verification"
+```

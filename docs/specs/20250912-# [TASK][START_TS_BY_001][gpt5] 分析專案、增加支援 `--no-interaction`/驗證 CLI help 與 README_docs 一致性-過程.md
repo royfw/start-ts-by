@@ -227,3 +227,90 @@ Options:
 ✅ **--skip-prompt**：一致性良好（包含 deprecated 警告）
 ✅ **--rm**：一致性良好
 ✅ **其他所有選項**：一致性良好
+
+## [2025-09-13][START_TS_BY_001-5][gpt5][Code] 分析專案、增加支援 `--no-interaction` - 驗證 CLI help 與 README_docs 一致性（文件修正）
+
+### 實際 CLI 輸出
+
+#### 主命令輸出：
+```
+Usage: start-ts-by [options] [command]
+
+Start TypeScript project by git repo or local folder templates
+
+Options:
+  -V, --version            output the version number
+  -h, --help               display help for command
+
+Commands:
+  create [options] [name]  Create a new project from a git template (Default)
+  help [command]           display help for command
+```
+
+#### create 子命令輸出：
+```
+Usage: start-ts-by create [options] [name]
+
+Create a new project from a git template (Default)
+
+Options:
+  -t, --template <repo>   Template source, e.g. user/repo,
+                          git@domain:group/repo.git, ./local-folder
+  --skip-prompt           Skip prompt (deprecated, use --no-interaction)
+                          (default: false)
+  --no-interaction, --ni  Non-interactive mode, skip all prompts (default:
+                          false)
+  --yes, -y               Use defaults and skip confirmations when applicable
+                          (default: false)
+  --vars <pairs...>       Variables in key=value format, supports nested keys
+                          and arrays (can be used multiple times) (default: [])
+  --vars-file <path>      Path to variables file (non-JSON, supports includes)
+  --strict                Strict mode: treat duplicate keys and type conflicts
+                          as errors (default: false)
+  --rm <files...>         Remove files/folders after project creation (default:
+                          [])
+  --no-husky              Remove .husky
+  --github                Keep .github/workflows (default: false)
+  --git-init              Run git init after creation (default: false)
+  --npm-install           Run npm install after creation (default: false)
+  -h, --help              display help for command
+```
+
+### 與兩份 README 之差異點列表
+
+1. **Commands 區塊格式差異**：
+   - **README.md (L137-138)**：
+     ```
+     create [options] [name]           Create a new project from a git template (Default)
+     help [command]                    display help for command
+     ```
+   - **實際 CLI 輸出**：
+     ```
+     create [options] [name]  Create a new project from a git template (Default)
+     help [command]           display help for command
+     ```
+   - **差異**：空白字元數量不一致
+
+2. **docs/README.zh-TW.md Commands 區塊混用語言**：
+   - **原文 (L132-133)**：
+     ```
+     create [options] [name]           從模板建立新專案 (預設)
+     help [command]                    顯示說明文件
+     ```
+   - **CLI 輸出為英文**，需統一為英文格式
+
+3. **--vars 選項 Default 值缺少**：
+   - **README.md (L148)**：缺少 `(default: [])`
+   - **docs/README.zh-TW.md (L143)**：缺少 `(default: [])`
+
+### 修正前/後摘要
+
+#### 修正前：
+- README.md Commands 區塊空白不一致
+- docs/README.zh-TW.md 混用中英文
+- 兩份文件都缺少 --vars 的 default 值
+
+#### 修正後：
+- 統一 Commands 區塊格式為與 CLI 完全相同
+- 中文版 README 統一使用英文 CLI 輸出格式
+- 補充 --vars 選項的 `(default: [])` 說明

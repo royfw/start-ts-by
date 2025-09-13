@@ -134,8 +134,8 @@ Options:
   -h, --help                        display help for command
 
 Commands:
-  create [options] [name]           Create new project from template (Default)
-  help [command]                    Display help for command
+  create [options] [name]  Create a new project from a git template (Default)
+  help [command]           display help for command
 
 # Create command options:
 npx start-ts-by create --help
@@ -145,7 +145,7 @@ Options:
   --skip-prompt                     Skip prompt (deprecated, use --no-interaction)
   --no-interaction, --ni            Non-interactive mode, skip all prompts
   --yes, -y                         Use defaults and skip confirmations when applicable
-  --vars <pairs...>                 Variables in key=value format, supports nested keys and arrays (can be used multiple times)
+  --vars <pairs...>                 Variables in key=value format, supports nested keys and arrays (can be used multiple times) (default: [])
   --vars-file <path>                Path to variables file (non-JSON, supports includes)
   --strict                          Strict mode: treat duplicate keys and type conflicts as errors
   --rm <files...>                   Remove files/folders after project creation

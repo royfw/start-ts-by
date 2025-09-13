@@ -129,8 +129,8 @@ Options:
   -h, --help                        顯示說明
 
 Commands:
-  create [options] [name]           從模板建立新專案 (預設)
-  help [command]                    顯示說明文件
+  create [options] [name]  Create a new project from a git template (Default)
+  help [command]           display help for command
 
 # create 指令選項：
 npx start-ts-by create --help
@@ -140,7 +140,7 @@ Options:
   --skip-prompt                     跳過提示（已棄用，建議使用 --no-interaction）
   --no-interaction, --ni            非互動模式，跳過所有提示
   --yes, -y                         使用預設值並跳過確認
-  --vars <pairs...>                 key=value 格式的變數，支援巢狀鍵和陣列（可重複使用）
+  --vars <pairs...>                 Variables in key=value format, supports nested keys and arrays (can be used multiple times) (default: [])
   --vars-file <path>                變數檔案路徑（非 JSON，支援包含）
   --strict                          嚴格模式：將重複鍵和型別衝突視為錯誤
   --rm <files...>                   建立專案後要移除的檔案/資料夾
