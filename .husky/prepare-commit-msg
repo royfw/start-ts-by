@@ -1,7 +1,0 @@
-# If is CI, skip the commit message hook
-# If is SKIP_PREPARE_COMMIT, skip the commit message hook
-if [ "$CI" = "true" ] || [ "$SKIP_PREPARE_COMMIT" = "true" ]; then
-  exit 0
-fi
-
-exec < /dev/tty && npx cz --hook || true

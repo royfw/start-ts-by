@@ -5,7 +5,10 @@ import {
   CreateProjectParams,
   PromptCheckArgsType,
   RnuExecInfoType,
+  ExtendedActionArgsType,
+  ParsedVarsType,
 } from '@/types';
+import { parseVarsFile, extractVarsFromActionArgs, validateRequiredVars } from '@/utils';
 import { runActionPromptArgTemplateFlag } from './runActionPromptArgTemplateFlag';
 import { runActionPromptName } from './runActionPromptName';
 import { getArgsRmList } from './getArgsRmList';
@@ -17,49 +20,73 @@ import { runActionPromptArgRmFlag } from './runActionPromptArgRmFlag';
 export async function createAction(name?: string, actionArgs?: ActionArgsType) {
   try {
     console.log('🚀 Creating project...');
-    const actionArgsParams = actionArgs ?? {};
-    const skipPrompt = actionArgsParams.skipPrompt as boolean;
+    const actionArgsParams = (actionArgs ?? {}) as ExtendedActionArgsType;
 
-    const projectName = await runActionPromptName(name);
-
-    const template = await runActionPromptArgTemplateFlag(
-      actionArgsParams.template as string,
+    // 檢查非互動模式
+    const noInteraction = !!(
+      actionArgsParams.noInteraction ||
+      actionArgsParams.ni ||
+      actionArgsParams.skipPrompt
     );
 
-    if (!skipPrompt)
-      await runActionPromptCheckArgs(actionArgsParams, actionPromptCheckArgs);
+    // 顯示 deprecated 警告
+    if (
+      actionArgsParams.skipPrompt &&
+      !actionArgsParams.noInteraction &&
+      !actionArgsParams.ni
+    ) {
+      console.log(
+        '⚠️  --skip-prompt is deprecated, please use --no-interaction or --ni instead',
+      );
+    }
 
-    // Get files/folders to remove
-    const paramArgsRmList = getArgsRmList(
-      actionArgsParams,
-      actionRmFileNames,
-      actionDotFileNames,
-    );
+    // 準備變數合併
+    let varsFromFile: ParsedVarsType = {};
+    let mergedVars: ParsedVarsType = {};
 
-    const promptRmFlagRmList = skipPrompt
-      ? []
-      : await runActionPromptArgRmFlag(actionArgsParams);
-    const promptInputsRmList = skipPrompt
-      ? []
-      : await runActionPromptWhileInputsAddRmList(
-          'Enter files/folders to remove (press double enter to skip):',
-        );
-    const finalRemoveList = paramArgsRmList
-      .concat(promptRmFlagRmList)
-      .concat(promptInputsRmList);
+    // 處理 --vars-file
+    if (actionArgsParams.varsFile) {
+      const varsFileResult = parseVarsFile(
+        actionArgsParams.varsFile,
+        !!actionArgsParams.strict,
+      );
 
-    // execList
-    const paramArgsExecList = getExecList(actionArgsParams, actionExecList);
-    const finalExecList = paramArgsExecList;
+      if (varsFileResult.errors.length > 0) {
+        console.error('❌ Error parsing vars file:');
+        for (const error of varsFileResult.errors) {
+          console.error(`   ${error}`);
+        }
+        process.exit(2);
+      }
 
-    const params: CreateProjectParams = {
-      name: projectName,
-      template,
-      removeList: finalRemoveList,
-      execList: finalExecList,
-    };
+      varsFromFile = varsFileResult.vars;
+    }
 
-    await createProject(params);
+    // 合併所有變數來源
+    const mergeResult = extractVarsFromActionArgs(actionArgsParams, varsFromFile);
+
+    if (mergeResult.errors.length > 0) {
+      console.error('❌ Error merging variables:');
+      for (const error of mergeResult.errors) {
+        console.error(`   ${error}`);
+      }
+      process.exit(2);
+    }
+
+    if (mergeResult.warnings.length > 0) {
+      for (const warning of mergeResult.warnings) {
+        console.log(`⚠️  ${warning}`);
+      }
+    }
+
+    mergedVars = mergeResult.merged;
+
+    // 非互動模式的處理邏輯
+    if (noInteraction) {
+      return await runNonInteractiveMode(name, actionArgsParams, mergedVars);
+    } else {
+      return await runInteractiveMode(name, actionArgsParams, mergedVars);
+    }
   } catch (error: unknown) {
     if ((error as { name?: string })?.name === 'ExitPromptError') {
       console.log('👋 Input aborted by user (Ctrl+C)');
@@ -74,6 +101,154 @@ export async function createAction(name?: string, actionArgs?: ActionArgsType) {
       process.exit(1);
     }
   }
+}
+
+/**
+ * 執行非互動模式
+ */
+async function runNonInteractiveMode(
+  name: string | undefined,
+  actionArgs: ExtendedActionArgsType,
+  mergedVars: ParsedVarsType,
+) {
+  // 確定專案名稱和模板
+  const projectName = name || (mergedVars.name as string);
+  const template = (actionArgs.template as string) || (mergedVars.template as string);
+
+  // 構建驗證物件
+  const validationVars: ParsedVarsType = { ...mergedVars };
+  if (projectName) validationVars.name = projectName;
+  if (template) validationVars.template = template;
+
+  // 驗證必要參數
+  const validation = validateRequiredVars(validationVars, ['name', 'template']);
+
+  if (!validation.isValid) {
+    console.error('❌ Missing required parameters for non-interactive mode:');
+    for (const missing of validation.missing) {
+      console.error(`   - ${missing}`);
+    }
+    console.error('');
+    console.error('Provide them via:');
+    console.error('  --vars name=my-app,template=user/repo');
+    console.error('  --vars-file ./my.vars');
+    console.error('  Command arguments: npx start-ts-by my-app -t user/repo --ni');
+    process.exit(2);
+  }
+
+  // 構建 removeList
+  const removeList = buildRemoveList(actionArgs, mergedVars);
+
+  // 構建 execList
+  const execList = buildExecList(actionArgs, mergedVars);
+
+  const params: CreateProjectParams = {
+    name: projectName,
+    template: template,
+    removeList,
+    execList,
+  };
+
+  await createProject(params);
+}
+
+/**
+ * 執行互動模式（保持原有邏輯）
+ */
+async function runInteractiveMode(
+  name: string | undefined,
+  actionArgs: ExtendedActionArgsType,
+  mergedVars: ParsedVarsType,
+) {
+  const skipPrompt = !!(
+    actionArgs.skipPrompt ||
+    actionArgs.noInteraction ||
+    actionArgs.ni
+  );
+
+  // 使用合併後的變數作為初始值（如果有的話）
+  const projectName = await runActionPromptName(
+    name || (mergedVars.name as string) || undefined,
+  );
+
+  const template = await runActionPromptArgTemplateFlag(
+    (actionArgs.template as string) || (mergedVars.template as string) || undefined,
+  );
+
+  if (!skipPrompt) await runActionPromptCheckArgs(actionArgs, actionPromptCheckArgs);
+
+  // Get files/folders to remove
+  const paramArgsRmList = getArgsRmList(
+    actionArgs,
+    actionRmFileNames,
+    actionDotFileNames,
+  );
+
+  const promptRmFlagRmList = skipPrompt ? [] : await runActionPromptArgRmFlag(actionArgs);
+  const promptInputsRmList = skipPrompt
+    ? []
+    : await runActionPromptWhileInputsAddRmList(
+        'Enter files/folders to remove (press double enter to skip):',
+      );
+  const finalRemoveList = paramArgsRmList
+    .concat(promptRmFlagRmList)
+    .concat(promptInputsRmList);
+
+  // execList
+  const paramArgsExecList = getExecList(actionArgs, actionExecList);
+  const finalExecList = paramArgsExecList;
+
+  const params: CreateProjectParams = {
+    name: projectName,
+    template,
+    removeList: finalRemoveList,
+    execList: finalExecList,
+  };
+
+  await createProject(params);
+}
+
+/**
+ * 構建 removeList
+ */
+function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedVarsType) {
+  // 從 actionArgs 獲取基本列表
+  const paramArgsRmList = getArgsRmList(
+    actionArgs,
+    actionRmFileNames,
+    actionDotFileNames,
+  );
+
+  // 從 mergedVars 獲取額外的 removeList
+  let varsRemoveList: any[] = [];
+  if (mergedVars.removeList && Array.isArray(mergedVars.removeList)) {
+    varsRemoveList = (mergedVars.removeList as any[]).map((item) => ({
+      field: String(item.field || ''),
+      isRemove: Boolean(item.isRemove),
+    }));
+  }
+
+  return paramArgsRmList.concat(varsRemoveList);
+}
+
+/**
+ * 構建 execList
+ */
+function buildExecList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedVarsType) {
+  // 從 actionArgs 獲取基本列表
+  let paramArgsExecList = getExecList(actionArgs, actionExecList);
+
+  // 從 mergedVars 獲取額外的 execList
+  if (mergedVars.execList && Array.isArray(mergedVars.execList)) {
+    const varsExecList = (mergedVars.execList as any[]).map((item) => ({
+      key: String(item.key || ''),
+      command: String(item.command || ''),
+      isExec: Boolean(item.isExec),
+    }));
+    paramArgsExecList = paramArgsExecList.concat(varsExecList);
+  }
+
+  return paramArgsExecList;
 }
 
 export const actionExecList: RnuExecInfoType[] = [
@@ -110,7 +285,32 @@ export const createActionCommand: ActionCommandType = {
     },
     {
       flags: '--skip-prompt',
-      description: 'Skip prompt',
+      description: 'Skip prompt (deprecated, use --no-interaction)',
+      defaultValue: false,
+    },
+    {
+      flags: '--no-interaction, --ni',
+      description: 'Non-interactive mode, skip all prompts',
+      defaultValue: false,
+    },
+    {
+      flags: '--yes, -y',
+      description: 'Use defaults and skip confirmations when applicable',
+      defaultValue: false,
+    },
+    {
+      flags: '--vars <pairs...>',
+      description:
+        'Variables in key=value format, supports nested keys and arrays (can be used multiple times)',
+      defaultValue: [],
+    },
+    {
+      flags: '--vars-file <path>',
+      description: 'Path to variables file (non-JSON, supports includes)',
+    },
+    {
+      flags: '--strict',
+      description: 'Strict mode: treat duplicate keys and type conflicts as errors',
       defaultValue: false,
     },
     {

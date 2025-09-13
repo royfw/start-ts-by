@@ -1,6 +1,6 @@
 # start-ts-by
 
-![NPM Version](https://img.shields.io/npm/v/start-ts-by) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/royfuwei/start-ts-by) 
+[![NPM Version](https://img.shields.io/npm/v/start-ts-by)](https://www.npmjs.com/package/start-ts-by) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/royfuwei/start-ts-by) 
 
 Create ts/js projects from flexible templates using git and local folders.
 
@@ -28,14 +28,62 @@ npx start-ts-by
 #   ...
 ```
 
-### Non-interactive (specify template directly)
+### Non-interactive Mode
 
+#### Basic Usage
 ```sh
+# Using --no-interaction (--ni) flag
+npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
+npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
+
+# Legacy --skip-prompt flag (deprecated, use --no-interaction)
 npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
-# With branch/tag/subdirectory:
-npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir
-npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates
-npx start-ts-by my-app -t ./my-template-folder/subdir
+```
+
+#### Advanced Non-interactive with Variables
+```sh
+# Using --vars for inline variables
+npx start-ts-by my-app --ni --vars name=my-app,template=user/repo
+npx start-ts-by my-app --ni --vars "removeList[0].field=README.md,removeList[0].isRemove=true"
+
+# Using --vars-file for configuration files
+npx start-ts-by my-app --ni --vars-file ./project.vars
+
+# Combining multiple sources (vars override vars-file)
+npx start-ts-by my-app --ni --vars-file ./base.vars --vars template=user/custom-repo
+```
+
+#### Variable File Format (.vars)
+Create a `.vars` file with key=value pairs:
+
+```bash
+# project.vars
+name=my-awesome-app
+template=user/repo
+
+# Nested variables for removeList
+removeList[0].field=README.md
+removeList[0].isRemove=true
+removeList[1].field=.github
+removeList[1].isRemove=false
+
+# Execution options
+execList[0].key=gitInit
+execList[0].command=git init
+execList[0].isExec=true
+
+# File content (@ prefix reads from file)
+# token=@./secret-token.txt
+
+# Include other vars files
+# include: ./common.vars
+```
+
+#### Template Sources with Branches/Subdirectories
+```sh
+npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir --ni
+npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates --ni
+npx start-ts-by my-app -t ./my-template-folder/subdir --ni
 ```
 
 ---
@@ -82,13 +130,45 @@ Usage: start-ts-by [options] [command]
 Start TypeScript project by git repo or local folder templates
 
 Options:
-  -V, --version            output the version number
-  -h, --help               display help for command
+  -V, --version                     output the version number
+  -h, --help                        display help for command
 
 Commands:
-  create [options] [name]  Create new project from template (Default)
-  help [command]           Display help for command
+  create [options] [name]  Create a new project from a git template (Default)
+  help [command]           display help for command
+
+# Create command options:
+npx start-ts-by create --help
+
+Options:
+  -t, --template <repo>             Template source (user/repo, git@domain:group/repo.git, ./local-folder)
+  --skip-prompt                     Skip prompt (deprecated, use --no-interaction)
+  --no-interaction, --ni            Non-interactive mode, skip all prompts
+  --yes, -y                         Use defaults and skip confirmations when applicable
+  --vars <pairs...>                 Variables in key=value format, supports nested keys and arrays (can be used multiple times) (default: [])
+  --vars-file <path>                Path to variables file (non-JSON, supports includes)
+  --strict                          Strict mode: treat duplicate keys and type conflicts as errors
+  --rm <files...>                   Remove files/folders after project creation
+  --no-husky                        Remove .husky
+  --github                          Keep .github/workflows
+  --git-init                        Run git init after creation
+  --npm-install                     Run npm install after creation
+  -h, --help                        display help for command
 ```
+
+### Variable Priority (high to low)
+1. `--vars` command line arguments
+2. `--vars-file` file contents
+3. Individual flags (`-t`, `--rm`, etc.)
+4. Environment variables
+5. Interactive input
+6. Default values
+
+### Error Handling
+- Non-interactive mode requires `name` and `template` parameters
+- Missing required parameters exit with code 2
+- File read errors and parsing failures provide specific error messages
+- `--strict` mode treats duplicate keys and type conflicts as errors (default: warnings)
 
 ---
 
