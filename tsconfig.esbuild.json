@@ -1,10 +1,6 @@
 {
   "extends": "./tsconfig.build.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext", // 輸出 ES Module, 搭配 Rollup
-    "moduleResolution": "Node" // 或 "NodeNext", 視 Node.js 版本而定
-  },
+  "compilerOptions": {},
   "include": ["src"],
   "exclude": ["dist", "node_modules"]
 }
