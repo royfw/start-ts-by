@@ -66,6 +66,7 @@ export type CreateProjectParams = {
   template: string;
   removeList: RemoveFileInfoType[];
   execList: RnuExecInfoType[];
+  isMonorepo?: boolean;
 };
 
 export type PromptCheckArgsType = {

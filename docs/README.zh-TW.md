@@ -39,6 +39,35 @@ npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
 npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
 ```
 
+#### Monorepo 模式
+```sh
+# 非互動模式：移除 lock 檔案、.npmrc、以及 package.json 中的 packageManager 欄位
+npx start-ts-by my-app -t user/repo --monorepo --ni
+
+# 結合其他旗標
+npx start-ts-by my-app -t user/repo --monorepo --no-husky --ni
+
+# 互動模式：預先指定 --monorepo 旗標
+npx start-ts-by my-app -t user/repo --monorepo
+
+# 互動模式：未指定時會在提示中詢問
+npx start-ts-by my-app -t user/repo
+# 在提示過程中會看到：
+# ? 啟用 monorepo 模式？（移除 lock 檔案、.npmrc 與 packageManager 欄位） (y/N)
+```
+
+`--monorepo` 旗標（或互動式提示）會自動移除與 monorepo 根層設定衝突的檔案：
+- `pnpm-lock.yaml`、`package-lock.json`、`yarn.lock`（lock 檔案）
+- `.npmrc`（套件管理器設定）
+- package.json 中的 `packageManager` 欄位
+
+**互動模式行為：**
+- 如果在啟動時提供 `--monorepo` 旗標，在提示中會預先選中
+- 如果未提供旗標，會在互動式提示中詢問
+- 預設為 `false`（未啟用）- 按 Enter 跳過或輸入 'y' 啟用
+
+這在建立 monorepo 的子專案時很有用，因為這些檔案應該在根層級管理。
+
 #### 進階非互動模式與變數
 ```sh
 # 使用 --vars 設定內嵌變數
@@ -148,6 +177,7 @@ Options:
   --github                          保留 .github/workflows
   --git-init                        建立後執行 git init
   --npm-install                     建立後執行 npm install
+  --monorepo                        移除 monorepo 衝突檔案（lock 檔案、.npmrc、packageManager 欄位）
   -h, --help                        顯示說明
 
 ```

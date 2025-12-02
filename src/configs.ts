@@ -25,6 +25,17 @@ const getPackageJson = (): PackageJsonType => {
 
 const packageJson = getPackageJson();
 
+/**
+ * Monorepo 模式下需要移除的檔案清單
+ * 這些檔案在 monorepo 環境中會與根目錄的套件管理機制衝突
+ */
+export const actionMonorepoFileNames = [
+  'pnpm-lock.yaml',
+  'package-lock.json',
+  'yarn.lock',
+  '.npmrc',
+];
+
 export const configs: ProjectConfigType = {
   name: packageJson.name ?? 'my-cli',
   version: packageJson.version ?? '0.0.1',

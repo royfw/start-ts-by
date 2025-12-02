@@ -9,6 +9,7 @@ import {
   ParsedVarsType,
 } from '@/types';
 import { parseVarsFile, extractVarsFromActionArgs, validateRequiredVars } from '@/utils';
+import { actionMonorepoFileNames } from '@/configs';
 import { runActionPromptArgTemplateFlag } from './runActionPromptArgTemplateFlag';
 import { runActionPromptName } from './runActionPromptName';
 import { getArgsRmList } from './getArgsRmList';
@@ -16,6 +17,7 @@ import { getExecList } from './getExecList';
 import { runActionPromptCheckArgs } from './runActionPromptCheckArgs';
 import { runActionPromptWhileInputsAddRmList } from './runActionPromptWhileInputsAddRmList';
 import { runActionPromptArgRmFlag } from './runActionPromptArgRmFlag';
+import { getRmFlagRmList } from './getRmFlagRmList';
 
 export async function createAction(name?: string, actionArgs?: ActionArgsType) {
   try {
@@ -147,6 +149,7 @@ async function runNonInteractiveMode(
     template: template,
     removeList,
     execList,
+    isMonorepo: actionArgs.monorepo === true,
   };
 
   await createProject(params);
@@ -184,6 +187,10 @@ async function runInteractiveMode(
     actionDotFileNames,
   );
 
+  // 處理 --monorepo flag（需要在問答之後處理，因為問答可能修改 actionArgs.monorepo 的值）
+  const monorepoRmList =
+    actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
+
   const promptRmFlagRmList = skipPrompt ? [] : await runActionPromptArgRmFlag(actionArgs);
   const promptInputsRmList = skipPrompt
     ? []
@@ -191,6 +198,7 @@ async function runInteractiveMode(
         'Enter files/folders to remove (press double enter to skip):',
       );
   const finalRemoveList = paramArgsRmList
+    .concat(monorepoRmList)
     .concat(promptRmFlagRmList)
     .concat(promptInputsRmList);
 
@@ -203,6 +211,7 @@ async function runInteractiveMode(
     template,
     removeList: finalRemoveList,
     execList: finalExecList,
+    isMonorepo: actionArgs.monorepo === true,
   };
 
   await createProject(params);
@@ -219,6 +228,12 @@ function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedV
     actionDotFileNames,
   );
 
+  // 處理 --monorepo flag
+  let monorepoRmList: any[] = [];
+  if (actionArgs.monorepo === true) {
+    monorepoRmList = getRmFlagRmList(actionMonorepoFileNames);
+  }
+
   // 從 mergedVars 獲取額外的 removeList
   let varsRemoveList: any[] = [];
   if (mergedVars.removeList && Array.isArray(mergedVars.removeList)) {
@@ -228,7 +243,7 @@ function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedV
     }));
   }
 
-  return paramArgsRmList.concat(varsRemoveList);
+  return paramArgsRmList.concat(monorepoRmList).concat(varsRemoveList);
 }
 
 /**
@@ -270,6 +285,11 @@ export const actionRmFileNames = ['husky', 'github'];
 export const actionPromptCheckArgs: PromptCheckArgsType[] = [
   { key: 'husky', message: 'Keep husky?' },
   { key: 'github', message: 'Keep GitHub Actions?' },
+  {
+    key: 'monorepo',
+    message:
+      'Enable monorepo mode? (Remove lock files, .npmrc, and packageManager field)',
+  },
   { key: 'gitInit', message: 'Initialize git?' },
   { key: 'npmInstall', message: 'Install dependencies?' },
 ];
@@ -335,6 +355,12 @@ export const createActionCommand: ActionCommandType = {
     {
       flags: '--npm-install',
       description: 'Run npm install after creation',
+      defaultValue: false,
+    },
+    {
+      flags: '--monorepo',
+      description:
+        'Remove monorepo conflicting files (lock files, .npmrc, packageManager field)',
       defaultValue: false,
     },
   ],

@@ -10,7 +10,7 @@ import {
 import { execSyncByList } from '@/utils/execSyncByList';
 
 export async function createProject(params: CreateProjectParams) {
-  const { name, template, removeList, execList } = params;
+  const { name, template, removeList, execList, isMonorepo } = params;
 
   const targetDir = getTargetDir(name);
 
@@ -22,7 +22,7 @@ export async function createProject(params: CreateProjectParams) {
   }
 
   // Initialize package.json
-  initProjPackageJson(targetDir);
+  initProjPackageJson(targetDir, true, isMonorepo);
 
   // Initialize README.md
   initProjReadMeMd(template, targetDir);
