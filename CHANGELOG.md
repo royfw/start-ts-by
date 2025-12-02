@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/royfuwei/start-ts-by/compare/v0.1.1...v0.1.2) (2025-12-02)
+
+
+### Features
+
+* **templates:** add royfuwei/starter-ts-fastify repo: TypeScript App - Fastify Framework ([af22825](https://github.com/royfuwei/start-ts-by/commit/af22825b9679741e87eee1d59911c0c63d1916b5))
+
 ### [0.1.1](https://github.com/royfuwei/start-ts-by/compare/v0.1.0...v0.1.1) (2025-12-02)
 
 
