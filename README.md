@@ -40,6 +40,35 @@ npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
 npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
 ```
 
+#### Monorepo Mode
+```sh
+# Non-interactive mode: Remove lock files, .npmrc, and packageManager field for monorepo subprojects
+npx start-ts-by my-app -t user/repo --monorepo --ni
+
+# Combine with other flags
+npx start-ts-by my-app -t user/repo --monorepo --no-husky --ni
+
+# Interactive mode: Specify --monorepo flag upfront
+npx start-ts-by my-app -t user/repo --monorepo
+
+# Interactive mode: Will prompt for monorepo mode if not specified
+npx start-ts-by my-app -t user/repo
+# During prompts, you'll see:
+# ? Enable monorepo mode? (Remove lock files, .npmrc, and packageManager field) (y/N)
+```
+
+The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
+- `pnpm-lock.yaml`, `package-lock.json`, `yarn.lock` (lock files)
+- `.npmrc` (package manager config)
+- `packageManager` field in package.json
+
+**Interactive Mode Behavior:**
+- If you provide `--monorepo` flag when starting, it will be pre-selected in the prompts
+- If you don't provide the flag, you'll be asked during the interactive prompts
+- Default is `false` (not enabled) - press Enter to skip or type 'y' to enable
+
+This is useful when creating subprojects in a monorepo where these files should be managed at the root level.
+
 #### Advanced Non-interactive with Variables
 ```sh
 # Using --vars for inline variables
@@ -153,6 +182,7 @@ Options:
   --github                          Keep .github/workflows
   --git-init                        Run git init after creation
   --npm-install                     Run npm install after creation
+  --monorepo                        Remove monorepo conflicting files (lock files, .npmrc, packageManager field)
   -h, --help                        display help for command
 ```
 
