@@ -8,6 +8,18 @@
     "repo": "royfuwei/starter-ts-lib"
   },
   {
+    "name": "Starter TypeScript Library - rolldown",
+    "repo": "royfuwei/starter-ts-lib-rolldown"
+  },
+  {
+    "name": "Starter TypeScript Library - rollup",
+    "repo": "royfuwei/starter-ts-lib-rollup"
+  },
+  {
+    "name": "Starter TypeScript Library - esbuild",
+    "repo": "royfuwei/starter-ts-lib-esbuild"
+  },
+  {
     "name": "Starter TypeScript TurboRepo",
     "repo": "royfuwei/starter-turbo"
   },
