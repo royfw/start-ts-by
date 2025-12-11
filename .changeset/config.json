@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "royfuwei/start-ts-by"
+    }
+  ],
+  "commit": true,
+  "fixed": [],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "production",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
