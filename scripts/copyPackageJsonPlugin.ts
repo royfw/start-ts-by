@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 // copyPackageJsonPlugin.js
 import fs from 'fs';
 import path from 'path';
 
-const copyPackageJsonFn = async (distDir) => {
+// eslint-disable-next-line @typescript-eslint/require-await
+const copyPackageJsonFn = async (distDir: string) => {
   // 1) 讀取根目錄的 package.json
   const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
 
@@ -34,10 +40,11 @@ const copyPackageJsonFn = async (distDir) => {
 export function copyPackageJsonPlugin(
   options = {
     distDir: 'dist',
+    type: 'tsdown',
   },
 ) {
   const { distDir, type } = options;
-  const name = type ? `${type}-copy-package-json-plugin` : 'copy-package-json-plugin';
+  const name = `${type}-copy-package-json-plugin`;
   switch (type) {
     case 'rollup':
       return {
@@ -49,8 +56,15 @@ export function copyPackageJsonPlugin(
     case 'esbuild':
       return {
         name: name,
-        setup(build) {
+        setup(build: any) {
           build.onEnd(() => copyPackageJsonFn(distDir));
+        },
+      };
+    case 'tsdown':
+      return {
+        name,
+        async closeBundle() {
+          await copyPackageJsonFn(distDir);
         },
       };
     default:
@@ -58,14 +72,20 @@ export function copyPackageJsonPlugin(
   }
 }
 
-export const esbuildCopyPackageJsonPlugin = (options = {}) =>
+export const esbuildCopyPackageJsonPlugin = (options: any) =>
   copyPackageJsonPlugin({
     ...options,
     type: 'esbuild',
   });
 
-export const rollupCopyPackageJsonPlugin = (options = {}) =>
+export const rollupCopyPackageJsonPlugin = (options: any) =>
   copyPackageJsonPlugin({
     ...options,
     type: 'rollup',
+  });
+
+export const tsdownCopyPackageJsonPlugin = (options: any) =>
+  copyPackageJsonPlugin({
+    ...options,
+    type: 'tsdown',
   });
