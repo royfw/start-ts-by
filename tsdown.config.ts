@@ -40,7 +40,7 @@ export default defineConfig({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   outExtensions: (context: OutExtensionContext) => {
     return {
-      js: 'js',
+      js: '.js',
     };
   },
   plugins: [
