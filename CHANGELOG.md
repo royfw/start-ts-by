@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.3
+
+### Patch Changes
+
+- d659e25: Fix outExtensions configuration to properly append .js extension
+
+  Fixed an issue where the outExtensions configuration was missing the `.js` extension,
+  causing output files to be generated without proper extensions (e.g., `indexjs` instead of `index.js`).
+
 ## 0.2.2
 
 ### Patch Changes
