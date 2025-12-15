@@ -22,6 +22,7 @@ npx start-ts-by my-app -t user/repo --rm pnpm-lock.yaml package-lock.json yarn.l
 - **新增 CLI 參數**：`--monorepo` 旗標（boolean，預設 `false`）
 - **移除檔案清單**：
   - `pnpm-lock.yaml`
+  - `pnpm-workspace.yaml`
   - `package-lock.json`
   - `yarn.lock`
   - `.npmrc`

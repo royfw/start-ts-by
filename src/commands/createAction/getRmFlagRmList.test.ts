@@ -21,9 +21,10 @@ describe('getRmFlagRmList', () => {
   it('should handle monorepo files correctly', () => {
     const result = getRmFlagRmList(actionMonorepoFileNames);
 
-    expect(result).toHaveLength(4);
+    expect(result).toHaveLength(5);
     expect(result).toEqual([
       { field: 'pnpm-lock.yaml', isRemove: true },
+      { field: 'pnpm-workspace.yaml', isRemove: true },
       { field: 'package-lock.json', isRemove: true },
       { field: 'yarn.lock', isRemove: true },
       { field: '.npmrc', isRemove: true },

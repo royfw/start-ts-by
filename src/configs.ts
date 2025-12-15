@@ -31,6 +31,7 @@ const packageJson = getPackageJson();
  */
 export const actionMonorepoFileNames = [
   'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
   'package-lock.json',
   'yarn.lock',
   '.npmrc',

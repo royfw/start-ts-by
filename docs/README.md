@@ -41,7 +41,7 @@ npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
 
 #### Monorepo Mode
 ```sh
-# Non-interactive mode: Remove lock files, .npmrc, and packageManager field for monorepo subprojects
+# Non-interactive mode: Remove lock files, workspace config, .npmrc, and packageManager field
 npx start-ts-by my-app -t user/repo --monorepo --ni
 
 # Combine with other flags
@@ -53,11 +53,11 @@ npx start-ts-by my-app -t user/repo --monorepo
 # Interactive mode: Will prompt for monorepo mode if not specified
 npx start-ts-by my-app -t user/repo
 # During prompts, you'll see:
-# ? Enable monorepo mode? (Remove lock files, .npmrc, and packageManager field) (y/N)
+# ? Enable monorepo mode? (Remove lock files, workspace config, .npmrc, and packageManager field) (y/N)
 ```
 
 The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
-- `pnpm-lock.yaml`, `package-lock.json`, `yarn.lock` (lock files)
+- `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package-lock.json`, `yarn.lock` (lock files and workspace config)
 - `.npmrc` (package manager config)
 - `packageManager` field in package.json
 
@@ -181,7 +181,7 @@ Options:
   --github                          Keep .github/workflows
   --git-init                        Run git init after creation
   --npm-install                     Run npm install after creation
-  --monorepo                        Remove monorepo conflicting files (lock files, .npmrc, packageManager field)
+  --monorepo                        Remove monorepo conflicting files (lock files, workspace config, .npmrc, packageManager field)
   -h, --help                        display help for command
 ```
 

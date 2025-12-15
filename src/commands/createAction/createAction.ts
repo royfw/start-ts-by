@@ -288,7 +288,7 @@ export const actionPromptCheckArgs: PromptCheckArgsType[] = [
   {
     key: 'monorepo',
     message:
-      'Enable monorepo mode? (Remove lock files, .npmrc, and packageManager field)',
+      'Enable monorepo mode? (Remove lock files, workspace config, .npmrc, and packageManager field)',
   },
   { key: 'gitInit', message: 'Initialize git?' },
   { key: 'npmInstall', message: 'Install dependencies?' },
@@ -360,7 +360,7 @@ export const createActionCommand: ActionCommandType = {
     {
       flags: '--monorepo',
       description:
-        'Remove monorepo conflicting files (lock files, .npmrc, packageManager field)',
+        'Remove monorepo conflicting files (lock files, workspace config, .npmrc, packageManager field)',
       defaultValue: false,
     },
   ],
