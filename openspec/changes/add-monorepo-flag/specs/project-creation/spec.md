@@ -3,12 +3,13 @@
 ## ADDED Requirements
 
 ### Requirement: Monorepo Mode Support
-系統應提供 `--monorepo` 旗標，讓使用者可以建立適合 monorepo 環境的子專案，自動移除與 monorepo 管理機制衝突的檔案和設定。
+系統應提供 `--monorepo` 旗標，讓使用者可以建立適合 monorepo 環境的子專案，自動移除與 monorepo 管理機制衝突的檔案和設定，包括 pnpm workspace 設定檔。
 
 #### Scenario: 使用 --monorepo 旗標建立專案
 - **WHEN** 使用者執行 `npx start-ts-by my-app -t user/repo --monorepo`
 - **THEN** 系統應從生成的專案中移除以下檔案：
   - `pnpm-lock.yaml`
+  - `pnpm-workspace.yaml`
   - `package-lock.json`
   - `yarn.lock`
   - `.npmrc`
@@ -56,6 +57,12 @@
 - **THEN** 系統應保留 `.nvmrc` 檔案（不移除）
 - **AND** 系統應保留 `.vscode` 目錄（不移除）
 - **AND** 系統應保留其他不影響 monorepo 套件管理的設定檔
+
+#### Scenario: pnpm workspace 巢狀衝突預防
+- **WHEN** 使用者在已有 pnpm workspace 的 monorepo 根目錄下使用 `--monorepo` 建立子專案
+- **THEN** 系統應移除子專案的 `pnpm-workspace.yaml`
+- **AND** 避免巢狀 workspace 設定衝突
+- **AND** 子專案應正確被根目錄的 workspace 管理
 
 ### Requirement: CLI 參數文件化
 系統的 CLI help 和 README 文件應清楚說明 `--monorepo` 參數的用途和使用方式。
