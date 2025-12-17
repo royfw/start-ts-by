@@ -15,6 +15,15 @@ const __dirname = dirname(__filename);
 const templatesJsonPath = resolve(__dirname, '../templates.json');
 const packageJsonPath = resolve(__dirname, '../package.json');
 
+/**
+ * 取得預設的 registry 設定檔路徑
+ * @returns 預設的 registry-config.json 路徑
+ */
+export function getDefaultRegistryConfigPath(): string {
+  // 從 src/configs.ts 往上一層到專案根目錄
+  return resolve(__dirname, '../registry-config.json');
+}
+
 const getTemplates = (): TemplateInfoType[] => {
   const templates = JSON.parse(
     readFileSync(templatesJsonPath, 'utf-8'),

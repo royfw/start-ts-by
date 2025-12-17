@@ -1,19 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { RegistryConfig } from './types.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-/**
- * 取得預設的 registry 設定檔路徑
- * @returns 預設的 registry-config.json 路徑
- */
-export function getDefaultRegistryConfigPath(): string {
-  // 從 src/utils/registry/ 往上三層到專案根目錄
-  return resolve(__dirname, '../../../registry-config.json');
-}
+import { getDefaultRegistryConfigPath } from '@/configs.js';
 
 /**
  * 載入 registry 設定檔

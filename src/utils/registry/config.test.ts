@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import { resolve } from 'path';
-import { loadRegistryConfig, getDefaultRegistryConfigPath } from './config.js';
+import { loadRegistryConfig } from './config.js';
+import { getDefaultRegistryConfigPath } from '@/configs.js';
 import { RegistryConfig } from './types.js';
 
 const TEST_CONFIG_DIR = resolve(process.cwd(), '.test-config');
