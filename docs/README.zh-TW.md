@@ -59,6 +59,8 @@ npx start-ts-by my-app -t user/repo
 `--monorepo` 旗標（或互動式提示）會自動移除與 monorepo 根層設定衝突的檔案：
 - `pnpm-lock.yaml`、`pnpm-workspace.yaml`、`package-lock.json`、`yarn.lock`（lock 檔案與 workspace 設定）
 - `.npmrc`（套件管理器設定）
+- `.husky` 目錄以及 package.json 中包含 "husky" 的 `prepare` script
+- `.github` 目錄（GitHub Actions workflows）
 - package.json 中的 `packageManager` 欄位
 
 **互動模式行為：**
@@ -264,7 +266,7 @@ Options:
   --github                          保留 .github/workflows
   --git-init                        建立後執行 git init
   --npm-install                     建立後執行 npm install
-  --monorepo                        移除 monorepo 衝突檔案（lock 檔案、workspace 設定、.npmrc、packageManager 欄位）
+  --monorepo                        移除 monorepo 衝突檔案（lock 檔案、workspace 設定、.npmrc、.husky、.github、prepare script、packageManager 欄位）
   -h, --help                        顯示說明
 
 ```

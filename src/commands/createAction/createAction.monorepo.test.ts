@@ -14,13 +14,15 @@ describe('createAction - monorepo functionality', () => {
       const monorepoRmList =
         actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
 
-      expect(monorepoRmList).toHaveLength(5);
+      expect(monorepoRmList).toHaveLength(7);
       expect(monorepoRmList).toEqual([
         { field: 'pnpm-lock.yaml', isRemove: true },
         { field: 'pnpm-workspace.yaml', isRemove: true },
         { field: 'package-lock.json', isRemove: true },
         { field: 'yarn.lock', isRemove: true },
         { field: '.npmrc', isRemove: true },
+        { field: '.husky', isRemove: true },
+        { field: '.github', isRemove: true },
       ]);
     });
 
@@ -61,7 +63,7 @@ describe('createAction - monorepo functionality', () => {
       const combinedList = [...monorepoRmList, ...rmList];
 
       // Should include both lists, even with duplicate (handled by downstream logic)
-      expect(combinedList.length).toBeGreaterThanOrEqual(5);
+      expect(combinedList.length).toBeGreaterThanOrEqual(7);
 
       // Verify monorepo files are present
       const fields = combinedList.map((item) => item.field);
@@ -82,8 +84,13 @@ describe('createAction - monorepo functionality', () => {
       expect(actionMonorepoFileNames).toContain('.npmrc');
     });
 
-    it('should have exactly 5 files', () => {
-      expect(actionMonorepoFileNames).toHaveLength(5);
+    it('should have exactly 7 files', () => {
+      expect(actionMonorepoFileNames).toHaveLength(7);
+    });
+
+    it('should contain .husky and .github', () => {
+      expect(actionMonorepoFileNames).toContain('.husky');
+      expect(actionMonorepoFileNames).toContain('.github');
     });
 
     it('should not contain .nvmrc or .vscode', () => {

@@ -60,6 +60,8 @@ npx start-ts-by my-app -t user/repo
 The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
 - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package-lock.json`, `yarn.lock` (lock files and workspace config)
 - `.npmrc` (package manager config)
+- `.husky` directory and `prepare` script containing "husky" in package.json
+- `.github` directory (GitHub Actions workflows)
 - `packageManager` field in package.json
 
 **Interactive Mode Behavior:**
@@ -269,7 +271,7 @@ Options:
   --github                          Keep .github/workflows
   --git-init                        Run git init after creation
   --npm-install                     Run npm install after creation
-  --monorepo                        Remove monorepo conflicting files (lock files, workspace config, .npmrc, packageManager field)
+  --monorepo                        Remove monorepo conflicting files (lock files, workspace config, .npmrc, .husky, .github, prepare script, packageManager field)
   -h, --help                        display help for command
 ```
 
