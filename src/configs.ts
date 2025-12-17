@@ -1,7 +1,13 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import { TemplateInfoType, PackageJsonType, ProjectConfigType } from '@/types';
+import {
+  TemplateInfoType,
+  PackageJsonType,
+  ProjectConfigType,
+  RegistryConfig,
+} from '@/types';
+import { loadRegistryConfig } from '@/utils/registry/config';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,3 +49,23 @@ export const configs: ProjectConfigType = {
   templates: getTemplates(),
   packageJson,
 };
+
+// Registry 設定管理
+let cachedRegistryConfig: RegistryConfig | null = null;
+
+/**
+ * 取得 registry 設定（帶快取）
+ */
+export function getRegistryConfig(): RegistryConfig {
+  if (!cachedRegistryConfig) {
+    cachedRegistryConfig = loadRegistryConfig();
+  }
+  return cachedRegistryConfig;
+}
+
+/**
+ * 清除 registry 設定快取（用於測試）
+ */
+export function clearRegistryConfigCache(): void {
+  cachedRegistryConfig = null;
+}

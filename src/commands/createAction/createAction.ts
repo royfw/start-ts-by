@@ -229,16 +229,16 @@ function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedV
   );
 
   // 處理 --monorepo flag
-  let monorepoRmList: any[] = [];
-  if (actionArgs.monorepo === true) {
-    monorepoRmList = getRmFlagRmList(actionMonorepoFileNames);
-  }
+  const monorepoRmList =
+    actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
 
   // 從 mergedVars 獲取額外的 removeList
-  let varsRemoveList: any[] = [];
+  let varsRemoveList: Array<{ field: string; isRemove: boolean }> = [];
   if (mergedVars.removeList && Array.isArray(mergedVars.removeList)) {
-    varsRemoveList = (mergedVars.removeList as any[]).map((item) => ({
-      field: String(item.field || ''),
+    varsRemoveList = (
+      mergedVars.removeList as Array<{ field?: unknown; isRemove?: unknown }>
+    ).map((item) => ({
+      field: typeof item.field === 'string' ? item.field : '',
       isRemove: Boolean(item.isRemove),
     }));
   }
@@ -255,9 +255,11 @@ function buildExecList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedVar
 
   // 從 mergedVars 獲取額外的 execList
   if (mergedVars.execList && Array.isArray(mergedVars.execList)) {
-    const varsExecList = (mergedVars.execList as any[]).map((item) => ({
-      key: String(item.key || ''),
-      command: String(item.command || ''),
+    const varsExecList = (
+      mergedVars.execList as Array<{ key?: unknown; command?: unknown; isExec?: unknown }>
+    ).map((item) => ({
+      key: typeof item.key === 'string' ? item.key : '',
+      command: typeof item.command === 'string' ? item.command : '',
       isExec: Boolean(item.isExec),
     }));
     paramArgsExecList = paramArgsExecList.concat(varsExecList);
