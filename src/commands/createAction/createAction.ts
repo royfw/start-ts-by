@@ -362,7 +362,7 @@ export const createActionCommand: ActionCommandType = {
     {
       flags: '--monorepo',
       description:
-        'Remove monorepo conflicting files (lock files, workspace config, .npmrc, packageManager field)',
+        'Remove monorepo conflicting files (lock files, workspace config, .npmrc, .husky, .github, packageManager field, prepare script)',
       defaultValue: false,
     },
   ],

@@ -22,7 +22,7 @@ export async function createProject(params: CreateProjectParams) {
   }
 
   // Initialize package.json
-  initProjPackageJson(targetDir, true, isMonorepo);
+  initProjPackageJson(targetDir, true, isMonorepo, removeList);
 
   // Initialize README.md
   initProjReadMeMd(template, targetDir);

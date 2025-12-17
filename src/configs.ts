@@ -43,6 +43,10 @@ const packageJson = getPackageJson();
 /**
  * Monorepo 模式下需要移除的檔案清單
  * 這些檔案在 monorepo 環境中會與根目錄的套件管理機制衝突
+ *
+ * - 套件管理器鎖定檔案和設定：由 monorepo 根目錄統一管理
+ * - .husky：Git hooks 應由 monorepo 根目錄統一管理
+ * - .github：CI/CD workflows 應由 monorepo 根目錄統一管理
  */
 export const actionMonorepoFileNames = [
   'pnpm-lock.yaml',
@@ -50,6 +54,8 @@ export const actionMonorepoFileNames = [
   'package-lock.json',
   'yarn.lock',
   '.npmrc',
+  '.husky',
+  '.github',
 ];
 
 export const configs: ProjectConfigType = {
