@@ -41,7 +41,7 @@ npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
 
 #### Monorepo 模式
 ```sh
-# 非互動模式：移除 lock 檔案、.npmrc、以及 package.json 中的 packageManager 欄位
+# 非互動模式：移除 lock 檔案、workspace 設定、.npmrc、以及 package.json 中的 packageManager 欄位
 npx start-ts-by my-app -t user/repo --monorepo --ni
 
 # 結合其他旗標
@@ -53,11 +53,11 @@ npx start-ts-by my-app -t user/repo --monorepo
 # 互動模式：未指定時會在提示中詢問
 npx start-ts-by my-app -t user/repo
 # 在提示過程中會看到：
-# ? 啟用 monorepo 模式？（移除 lock 檔案、.npmrc 與 packageManager 欄位） (y/N)
+# ? 啟用 monorepo 模式？（移除 lock 檔案、workspace 設定、.npmrc 與 packageManager 欄位） (y/N)
 ```
 
 `--monorepo` 旗標（或互動式提示）會自動移除與 monorepo 根層設定衝突的檔案：
-- `pnpm-lock.yaml`、`package-lock.json`、`yarn.lock`（lock 檔案）
+- `pnpm-lock.yaml`、`pnpm-workspace.yaml`、`package-lock.json`、`yarn.lock`（lock 檔案與 workspace 設定）
 - `.npmrc`（套件管理器設定）
 - package.json 中的 `packageManager` 欄位
 
@@ -264,7 +264,7 @@ Options:
   --github                          保留 .github/workflows
   --git-init                        建立後執行 git init
   --npm-install                     建立後執行 npm install
-  --monorepo                        移除 monorepo 衝突檔案（lock 檔案、.npmrc、packageManager 欄位）
+  --monorepo                        移除 monorepo 衝突檔案（lock 檔案、workspace 設定、.npmrc、packageManager 欄位）
   -h, --help                        顯示說明
 
 ```

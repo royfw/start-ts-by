@@ -14,9 +14,10 @@ describe('createAction - monorepo functionality', () => {
       const monorepoRmList =
         actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
 
-      expect(monorepoRmList).toHaveLength(4);
+      expect(monorepoRmList).toHaveLength(5);
       expect(monorepoRmList).toEqual([
         { field: 'pnpm-lock.yaml', isRemove: true },
+        { field: 'pnpm-workspace.yaml', isRemove: true },
         { field: 'package-lock.json', isRemove: true },
         { field: 'yarn.lock', isRemove: true },
         { field: '.npmrc', isRemove: true },
@@ -75,13 +76,14 @@ describe('createAction - monorepo functionality', () => {
   describe('actionMonorepoFileNames constant', () => {
     it('should contain all required monorepo files', () => {
       expect(actionMonorepoFileNames).toContain('pnpm-lock.yaml');
+      expect(actionMonorepoFileNames).toContain('pnpm-workspace.yaml');
       expect(actionMonorepoFileNames).toContain('package-lock.json');
       expect(actionMonorepoFileNames).toContain('yarn.lock');
       expect(actionMonorepoFileNames).toContain('.npmrc');
     });
 
-    it('should have exactly 4 files', () => {
-      expect(actionMonorepoFileNames).toHaveLength(4);
+    it('should have exactly 5 files', () => {
+      expect(actionMonorepoFileNames).toHaveLength(5);
     });
 
     it('should not contain .nvmrc or .vscode', () => {

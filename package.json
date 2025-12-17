@@ -1,6 +1,6 @@
 {
   "name": "start-ts-by",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Start TypeScript project by git repo or local folder templates",
   "main": "src/index.ts",
   "scripts": {
