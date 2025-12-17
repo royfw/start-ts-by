@@ -196,5 +196,4 @@ A: No, even if a registry fails to load, you can still use built-in templates or
 
 ## Reference Links
 
-- [README - Registry Support](../README.md#-registry-support)
-- [Example Registry Config](../registry-config.example.json)
+- [README - Registry Support](./README.md#-registry-support)

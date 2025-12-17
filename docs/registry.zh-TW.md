@@ -196,5 +196,4 @@ A: 不會，即使 registry 載入失敗，你仍然可以使用內建 templates
 
 ## 參考連結
 
-- [README - Registry 支援](../README.md#-registry-support)
-- [範例 Registry Config](../registry-config.example.json)
+- [README - Registry 支援](./README.md#-registry-support)
