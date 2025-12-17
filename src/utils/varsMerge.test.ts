@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect } from 'vitest';
 import { mergeVars, extractVarsFromActionArgs, validateRequiredVars } from './varsMerge';
 import { ParsedVarsType, ExtendedActionArgsType } from '@/types';
