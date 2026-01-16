@@ -4,7 +4,7 @@
   "description": "Start TypeScript project by git repo or local folder templates",
   "main": "src/index.ts",
   "bin": {
-    "start-ts-by": "./bin/index.js"
+    "start-ts-by": "./dist/bin/index.js"
   },
   "scripts": {
     "publish:dist": "./publish.sh",
