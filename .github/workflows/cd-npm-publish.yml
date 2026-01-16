@@ -1,0 +1,54 @@
+name: CD NPM Publish
+
+on:
+  pull_request_target:
+    branches: [npm_publish]
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.ch.outputs.channel }}
+    # 只有合併成功、且來自同 repo 的特定 release 分支才執行
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (
+        github.event.pull_request.head.ref == 'release/stable' ||
+        github.event.pull_request.head.ref == 'release/alpha'  ||
+        github.event.pull_request.head.ref == 'release/beta'   ||
+        github.event.pull_request.head.ref == 'release/rc'
+      )
+    steps:
+      - name: Resolve channel from head ref
+        id: ch
+        shell: bash
+        run: |
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          if [ "$HEAD" = "release/stable" ]; then
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=${HEAD#release/}" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    needs: resolve
+    if: needs.resolve.outputs.channel != ''
+    uses: royfuwei/rf-devops/.github/workflows/_changesets-publish-only.yml@main
+    secrets:
+      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    with:
+      ref: npm_publish
+      channel: ${{ needs.resolve.outputs.channel }}
+      node_version: 20.x
