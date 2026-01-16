@@ -24,21 +24,7 @@ export interface TemplateSource {
 export async function getAllTemplateSources(): Promise<TemplateSource[]> {
   const sources: TemplateSource[] = [];
 
-  // 1. 載入內建 templates
-  const builtinTemplates = configs.templates.map((t) => ({
-    id: t.repo,
-    title: t.name,
-    value: `builtin:${t.repo}`,
-    description: `GitHub: ${t.repo}`,
-  }));
-
-  sources.push({
-    type: 'builtin',
-    name: 'Built-in Templates',
-    templates: builtinTemplates,
-  });
-
-  // 2. 載入外部 registries
+  // 1. 載入外部 registries
   const registryConfig = loadRegistryConfig();
   const enabledRegistries = registryConfig.registries.filter((r) => r.enabled !== false);
 
@@ -55,7 +41,7 @@ export async function getAllTemplateSources(): Promise<TemplateSource[]> {
 
       sources.push({
         type: 'registry',
-        name: registrySource.name,
+        name: '(Registry) ' + registrySource.name,
         templates: registryTemplates,
       });
     } catch (error) {
@@ -66,6 +52,20 @@ export async function getAllTemplateSources(): Promise<TemplateSource[]> {
       }
     }
   }
+
+  // 2. 載入內建 templates
+  const builtinTemplates = configs.templates.map((t) => ({
+    id: t.repo,
+    title: t.name,
+    value: `builtin:${t.repo}`,
+    description: `GitHub: ${t.repo}`,
+  }));
+
+  sources.push({
+    type: 'builtin',
+    name: '(Default) Built-in Templates',
+    templates: builtinTemplates,
+  });
 
   return sources;
 }
