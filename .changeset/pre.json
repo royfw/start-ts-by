@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "start-ts-by": "0.4.0"
+  },
+  "changesets": [
+    "spotty-pugs-laugh",
+    "tender-dragons-heal"
+  ]
+}
