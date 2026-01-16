@@ -31,7 +31,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/royfuwei/start-ts-by' },
+      { icon: 'github', link: 'https://github.com/royfw/start-ts-by' },
       { icon: 'npm', link: 'https://www.npmjs.com/package/start-ts-by' },
     ],
   },

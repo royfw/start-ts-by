@@ -1,6 +1,6 @@
 # start-ts-by
 
-[![NPM Version](https://img.shields.io/npm/v/start-ts-by)](https://www.npmjs.com/package/start-ts-by) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/royfuwei/start-ts-by) 
+[![NPM Version](https://img.shields.io/npm/v/start-ts-by)](https://www.npmjs.com/package/start-ts-by) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/royfw/start-ts-by)
 
 Create ts/js projects from flexible templates using git and local folders.
 
@@ -23,24 +23,26 @@ npx start-ts-by
 # ✔ Enter project name: my-app
 # ✔ Enter template (e.g. user/repo, ./local-path, git@domain:group/repo.git)
 # ? Choose a template (Use arrow keys)
-#   royfuwei/starter-ts-app (Starter TypeScript App)
-#   royfuwei/starter-ts-lib (Starter TypeScript Library)
+#   royfw/starter-ts-app (Starter TypeScript App)
+#   royfw/starter-ts-lib (Starter TypeScript Library)
 #   ...
 ```
 
 ### Non-interactive Mode
 
 #### Basic Usage
+
 ```sh
 # Using --no-interaction (--ni) flag
-npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
-npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
+npx start-ts-by my-app -t royfw/starter-ts-app --no-interaction
+npx start-ts-by my-app -t royfw/starter-ts-app --ni
 
 # Legacy --skip-prompt flag (deprecated, use --no-interaction)
-npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
+npx start-ts-by my-app --skip-prompt -t royfw/starter-ts-app
 ```
 
 #### Monorepo Mode
+
 ```sh
 # Non-interactive mode: Remove lock files, workspace config, .npmrc, and packageManager field
 npx start-ts-by my-app -t user/repo --monorepo --ni
@@ -58,6 +60,7 @@ npx start-ts-by my-app -t user/repo
 ```
 
 The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
+
 - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package-lock.json`, `yarn.lock` (lock files and workspace config)
 - `.npmrc` (package manager config)
 - `.husky` directory and `prepare` script containing "husky" in package.json
@@ -65,6 +68,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 - `packageManager` field in package.json
 
 **Interactive Mode Behavior:**
+
 - If you provide `--monorepo` flag when starting, it will be pre-selected in the prompts
 - If you don't provide the flag, you'll be asked during the interactive prompts
 - Default is `false` (not enabled) - press Enter to skip or type 'y' to enable
@@ -72,6 +76,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 This is useful when creating subprojects in a monorepo where these files should be managed at the root level.
 
 #### Advanced Non-interactive with Variables
+
 ```sh
 # Using --vars for inline variables
 npx start-ts-by my-app --ni --vars name=my-app,template=user/repo
@@ -85,6 +90,7 @@ npx start-ts-by my-app --ni --vars-file ./base.vars --vars template=user/custom-
 ```
 
 #### Variable File Format (.vars)
+
 Create a `.vars` file with key=value pairs:
 
 ```bash
@@ -111,8 +117,9 @@ execList[0].isExec=true
 ```
 
 #### Template Sources with Branches/Subdirectories
+
 ```sh
-npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir --ni
+npx start-ts-by my-app -t royfw/starter-ts-app#dev/subdir --ni
 npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates --ni
 npx start-ts-by my-app -t ./my-template-folder/subdir --ni
 ```
@@ -163,7 +170,7 @@ Create a `registry-config.json` file:
   "registries": [
     {
       "name": "start-ts-templates",
-      "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+      "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
       "enabled": true
     }
   ],
@@ -203,9 +210,9 @@ For detailed instructions, see [Registry Guide](./docs/registry.md) | [zh-TW](./
 
 ### Official Template Collection
 
-The official template collection is maintained at [royfuwei/start-ts-templates](https://github.com/royfuwei/start-ts-templates):
+The official template collection is maintained at [royfw/start-ts-templates](https://github.com/royfw/start-ts-templates):
 
-- 📦 **Repository**: [github.com/royfuwei/start-ts-templates](https://github.com/royfuwei/start-ts-templates)
+- 📦 **Repository**: [github.com/royfw/start-ts-templates](https://github.com/royfw/start-ts-templates)
 - 📋 **Registry**: Automatically configured with `registry-config.json`
 - 🎯 **Templates**: TypeScript app/lib templates with modern tooling (tsdown, vitest, etc.)
 - 📖 **Usage**: Templates are available in interactive mode or via `--list` command
@@ -214,33 +221,33 @@ The official template collection is maintained at [royfuwei/start-ts-templates](
 
 ## 📝 Supported Template Sources & Syntax
 
-* **GitHub**
+- **GitHub**
 
-  * `user/repo`
-  * `user/repo#branch`
-  * `user/repo#branch/subdir`
-  * `user/repo/subdir`
+  - `user/repo`
+  - `user/repo#branch`
+  - `user/repo#branch/subdir`
+  - `user/repo/subdir`
 
-* **Custom Git / GitLab / Bitbucket / Gitea / etc.**
+- **Custom Git / GitLab / Bitbucket / Gitea / etc.**
 
-  * `git@your.gitlab:group/repo.git#branch/subdir`
-  * `https://your.gitlab/group/repo.git#tag/subdir`
+  - `git@your.gitlab:group/repo.git#branch/subdir`
+  - `https://your.gitlab/group/repo.git#tag/subdir`
 
-* **Local Folders**
+- **Local Folders**
 
-  * `./my-template`
-  * `./my-template/subdir`
-  * `file:./my-template#subdir`
+  - `./my-template`
+  - `./my-template/subdir`
+  - `file:./my-template#subdir`
 
 ---
 
 ## ⚡ How It Works
 
-* **Removed degit dependency.**
-* Uses native `git` commands to clone repositories based on parsed template source.
-* Local folders are copied directly.
-* Supports branch/tag and subdirectory selection for all git sources.
-* Works with GitHub, GitLab, private git servers, SSH/HTTP URLs, and local paths.
+- **Removed degit dependency.**
+- Uses native `git` commands to clone repositories based on parsed template source.
+- Local folders are copied directly.
+- Supports branch/tag and subdirectory selection for all git sources.
+- Works with GitHub, GitLab, private git servers, SSH/HTTP URLs, and local paths.
 
 ---
 
@@ -285,6 +292,7 @@ Options:
 ```
 
 ### Variable Priority (high to low)
+
 1. `--vars` command line arguments
 2. `--vars-file` file contents
 3. Individual flags (`-t`, `--rm`, etc.)
@@ -293,6 +301,7 @@ Options:
 6. Default values
 
 ### Error Handling
+
 - Non-interactive mode requires `name` and `template` parameters
 - Missing required parameters exit with code 2
 - File read errors and parsing failures provide specific error messages
@@ -302,11 +311,11 @@ Options:
 
 ## References
 
-* [Development](./docs/development.md)
+- [Development](./docs/development.md)
 
 ---
 
 **Key changes:**
 
-* degit is removed, all template fetching is handled by git commands or direct file copy.
-* Template source string is parsed to support repo URLs, branches, tags, and subdirectories.
+- degit is removed, all template fetching is handled by git commands or direct file copy.
+- Template source string is parsed to support repo URLs, branches, tags, and subdirectories.

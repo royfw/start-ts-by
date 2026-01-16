@@ -1,6 +1,7 @@
 # [TASK][START_TS_BY_003][claude] 支援外部 registry.json - 技術設計文件
 
 ## 文件資訊
+
 - **任務編號**: START_TS_BY_003
 - **建立日期**: 2025-12-16
 - **文件狀態**: 設計階段
@@ -62,16 +63,17 @@ src/
 [
   {
     "name": "Starter TypeScript App",
-    "repo": "royfuwei/starter-ts-app"
+    "repo": "royfw/starter-ts-app"
   },
   {
     "name": "Starter TypeScript Library",
-    "repo": "royfuwei/starter-ts-lib"
+    "repo": "royfw/starter-ts-lib"
   }
 ]
 ```
 
 **資料結構分析**：
+
 - 簡單的陣列結構
 - 每個 template 包含 `name` 和 `repo`
 - 在 [`configs.ts`](src/configs.ts:12-17) 中透過 `getTemplates()` 讀取
@@ -80,6 +82,7 @@ src/
 ### 1.4 關鍵發現
 
 **優點**：
+
 1. 架構清晰，職責分離良好
 2. 已支援多種 template 來源（GitHub、Git、本地）
 3. [`parseTemplateSource()`](src/utils/parseTemplateSource.ts:5-87) 非常靈活，支援分支和子目錄
@@ -87,6 +90,7 @@ src/
 5. 支援互動和非互動兩種模式
 
 **限制**：
+
 1. templates.json 是硬編碼在專案中的
 2. 無法動態新增外部 template 來源
 3. 沒有 registry 管理機制
@@ -122,18 +126,22 @@ src/
 ### 2.2 功能模組設計
 
 #### 模組 1: Registry 管理器
+
 **職責**: 管理內建和外部 registry 來源
 
 **核心功能**:
+
 - 讀取設定檔中的 registry 清單
 - 支援本地和遠端 registry.json
 - 提供 registry 快取機制
 - 驗證 registry 格式
 
 #### 模組 2: 階層式選擇介面
+
 **職責**: 提供使用者友善的 template 選擇體驗
 
 **流程設計**:
+
 ```
 第一層選擇:
 ├─ 內建 Templates (from templates.json)
@@ -149,18 +157,20 @@ src/
 ```
 
 #### 模組 3: List 命令
+
 **職責**: 列出所有可用的 templates
 
 **輸出格式設計**:
+
 ```
 Available Templates:
 
 [Built-in]
-  • royfuwei/starter-ts-app          Starter TypeScript App
-  • royfuwei/starter-ts-lib          Starter TypeScript Library
+  • royfw/starter-ts-app          Starter TypeScript App
+  • royfw/starter-ts-lib          Starter TypeScript Library
   ...
 
-[Registry: royfuwei/start-ts-templates]
+[Registry: royfw/start-ts-templates]
   • app-tsdown                       App (tsdown)
   • lib                              Library
   ...
@@ -308,7 +318,7 @@ export type ProjectConfigType = {
 
 ```json
 {
-  "repo": "royfuwei/start-ts-templates",
+  "repo": "royfw/start-ts-templates",
   "defaultRef": "main",
   "name": "Official Start-TS Templates",
   "description": "Official template collection for start-ts-by",
@@ -346,7 +356,7 @@ export type ProjectConfigType = {
   "registries": [
     {
       "name": "Official Templates",
-      "source": "royfuwei/start-ts-templates",
+      "source": "royfw/start-ts-templates",
       "enabled": true,
       "priority": 10
     },
@@ -414,7 +424,7 @@ runActionPromptArgTemplateFlag()
   ┌──────────────────────────────────────┐
   │ Select template source:               │
   │ ○ Built-in Templates                  │
-  │ ○ Official Templates (royfuwei/...)   │
+  │ ○ Official Templates (royfw/...)   │
   │ ○ Community Templates                 │
   │ ○ Enter custom GitHub URL             │
   └──────────────────────────────────────┘
@@ -436,7 +446,7 @@ if (選擇 "Built-in Templates" 或 registry)
   ↓
   構建完整的 template 路徑:
   - registry.repo + "#" + registry.defaultRef + "/" + template.path
-  - 例如: "royfuwei/start-ts-templates#main/templates/app-tsdown"
+  - 例如: "royfw/start-ts-templates#main/templates/app-tsdown"
   ↓
   使用現有的 parseTemplateSource() 和 templateToLocal()
 ```
@@ -515,21 +525,26 @@ src/
 ### 5.2 修改現有檔案
 
 **[`src/types.ts`](src/types.ts)**
+
 - 新增所有 registry 相關類型定義
 - 擴展 `ProjectConfigType`
 
 **[`src/configs.ts`](src/configs.ts)**
+
 - 新增 `loadAllRegistries()` 函數
 - 修改 `configs` 物件，加入 `registries` 欄位
 
 **[`src/index.ts`](src/index.ts)**
+
 - 新增 `list` 命令註冊
 
 **[`src/commands/createAction/createAction.ts`](src/commands/createAction/createAction.ts)**
+
 - 新增對 "registry:" 前綴的支援
 - 在非互動模式下支援 registry template ID
 
 **[`src/commands/createAction/runActionPromptArgTemplateFlag.ts`](src/commands/createAction/runActionPromptArgTemplateFlag.ts)**
+
 - 重構為階層式選擇
 - 第一層：選擇來源（內建/registries/手動）
 - 第二層：選擇具體 template
@@ -632,7 +647,7 @@ npx start-ts-by list
 # → 驗證分組正確
 
 # 測試場景 4: 向後相容性
-npx start-ts-by my-app --ni --template "royfuwei/starter-ts-app"
+npx start-ts-by my-app --ni --template "royfw/starter-ts-app"
 # → 驗證現有功能不受影響
 ```
 
@@ -664,17 +679,20 @@ npx start-ts-by my-app --ni --template "royfuwei/starter-ts-app"
 ### 7.2 遷移路徑
 
 **階段 1: 內部使用者（Early Adopters）**
+
 - 建立示範 registry.json
 - 手動建立 registry-config.json
 - 測試並收集回饋
 
 **階段 2: 文件更新**
+
 - 更新 README.md
 - 新增 registry 使用指南
 - 提供範例 registry.json
 
 **階段 3: 官方 registry**
-- 建立 royfuwei/start-ts-templates
+
+- 建立 royfw/start-ts-templates
 - 遷移部分內建 templates 到 registry
 - 保留內建 templates 以確保相容性
 
@@ -695,9 +713,11 @@ npx start-ts-by my-app --ni --template "royfuwei/starter-ts-app"
 ### 8.2 詳細解決方案
 
 #### 風險 1: 網路依賴性
+
 **問題**: 載入遠端 registry 需要網路連線
 
 **解決方案**:
+
 ```typescript
 // 快取策略
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -711,9 +731,11 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 ```
 
 #### 風險 2: Registry 格式不一致
+
 **問題**: 不同版本的 registry.json 格式可能不同
 
 **解決方案**:
+
 ```typescript
 // 1. 提供 JSON Schema
 // registry.schema.json
@@ -742,9 +764,11 @@ function validateRegistry(data: unknown): RegistryJsonType {
 ```
 
 #### 風險 3: 效能問題
+
 **問題**: 載入多個 registries 可能很慢
 
 **解決方案**:
+
 ```typescript
 // 1. 並行載入
 async function loadAllRegistries(configs: RegistryConfigType[]) {
@@ -762,9 +786,11 @@ async function loadAllRegistries(configs: RegistryConfigType[]) {
 ```
 
 #### 風險 4: 安全性
+
 **問題**: 惡意 registry 可能包含有害 templates
 
 **解決方案**:
+
 ```typescript
 // 1. 來源驗證
 // 僅允許已知的 registry 來源（在 registry-config.json 中）
@@ -782,9 +808,11 @@ Do you trust this source? (y/N)
 ```
 
 #### 風險 5: 版本相容性
+
 **問題**: 舊版 CLI 無法處理新版 registry 格式
 
 **解決方案**:
+
 ```typescript
 // 1. Registry version field
 {
@@ -812,6 +840,7 @@ Please update: npm install -g start-ts-by@latest
 ## 9. 實作優先順序
 
 ### Phase 1: 核心功能（MVP）
+
 **目標**: 基本的 registry 支援
 
 - [ ] 定義 TypeScript 類型
@@ -820,11 +849,13 @@ Please update: npm install -g start-ts-by@latest
 - [ ] 支援本地 registry.json
 
 **驗收標準**:
+
 - 可以從本地 registry.json 載入 templates
 - 可以透過階層式介面選擇 template
 - 可以成功建立專案
 
 ### Phase 2: Registry 管理
+
 **目標**: 完整的 registry 生態系統
 
 - [ ] 實作 `registry-config.json` 支援
@@ -833,11 +864,13 @@ Please update: npm install -g start-ts-by@latest
 - [ ] 實作 `list` 命令
 
 **驗收標準**:
+
 - 可以從設定檔管理多個 registries
 - 快取機制正常運作
 - 可以列出所有可用 templates
 
 ### Phase 3: 進階功能
+
 **目標**: 使用者體驗優化
 
 - [ ] 非互動模式支援 `registry:` 語法
@@ -846,10 +879,12 @@ Please update: npm install -g start-ts-by@latest
 - [ ] 更友善的錯誤訊息
 
 **驗收標準**:
+
 - 所有功能在互動和非互動模式下都能運作
 - 有完整的錯誤處理和使用者提示
 
 ### Phase 4: 文件和測試
+
 **目標**: 生產就緒
 
 - [ ] 完整的單元測試覆蓋
@@ -858,6 +893,7 @@ Please update: npm install -g start-ts-by@latest
 - [ ] 建立官方 registry 範例
 
 **驗收標準**:
+
 - 測試覆蓋率 > 80%
 - 所有 E2E 場景通過
 - 文件完整且清晰
@@ -883,6 +919,7 @@ Please update: npm install -g start-ts-by@latest
    - 社群貢獻的 templates
 
 4. **CLI 指令擴展**
+
    ```bash
    npx start-ts-by registry add <source>
    npx start-ts-by registry list
@@ -962,7 +999,7 @@ $ npx start-ts-by
 
 ? Select template source: (Use arrow keys)
 ❯ Built-in Templates
-  Official Templates (royfuwei/start-ts-templates)
+  Official Templates (royfw/start-ts-templates)
   Community Templates
   Enter custom GitHub URL
 
@@ -1000,12 +1037,12 @@ $ npx start-ts-by list
 📋 Available Templates:
 
 [Built-in]
-  • royfuwei/starter-ts-app              Starter TypeScript App
-  • royfuwei/starter-ts-lib              Starter TypeScript Library
-  • royfuwei/starter-ts-lib-rolldown     Starter TypeScript Library - rolldown
-  • royfuwei/starter-turbo               Starter TypeScript TurboRepo
+  • royfw/starter-ts-app              Starter TypeScript App
+  • royfw/starter-ts-lib              Starter TypeScript Library
+  • royfw/starter-ts-lib-rolldown     Starter TypeScript Library - rolldown
+  • royfw/starter-turbo               Starter TypeScript TurboRepo
 
-[Official Templates] (royfuwei/start-ts-templates)
+[Official Templates] (royfw/start-ts-templates)
   • app-tsdown                           App (tsdown)
   • lib                                  Library
   • monorepo                             Monorepo (Turborepo)
@@ -1049,23 +1086,27 @@ Total: 11 templates available
 ### 13.2 實作的功能
 
 #### Phase 1: 核心功能 ✅
+
 - ✅ TypeScript 類型定義（[`src/utils/registry/types.ts`](../../../src/utils/registry/types.ts)）
 - ✅ Registry validator（[`src/utils/registry/validator.ts`](../../../src/utils/registry/validator.ts)）
 - ✅ Registry loader（[`src/utils/registry/loader.ts`](../../../src/utils/registry/loader.ts)）
 - ✅ 單元測試（35 個測試，覆蓋率 88.54%）
 
 #### Phase 2: 階層式選擇 ✅
+
 - ✅ Registry config 管理（[`src/utils/registry/config.ts`](../../../src/utils/registry/config.ts)）
 - ✅ Template resolver（[`src/utils/registry/resolver.ts`](../../../src/utils/registry/resolver.ts)）
 - ✅ 階層式選擇介面整合（[`src/commands/createAction/runActionPromptArgTemplateFlag.ts`](../../../src/commands/createAction/runActionPromptArgTemplateFlag.ts)）
 - ✅ 單元測試（15 個測試）
 
 #### Phase 3: List 命令 ✅
+
 - ✅ `--list` 系列選項（[`src/commands/listAction/listAction.ts`](../../../src/commands/listAction/listAction.ts)）
 - ✅ 多種輸出格式（一般/JSON/詳細）
 - ✅ 單元測試（8 個測試，覆蓋率 100%）
 
 #### Phase 4: 測試驗證 ✅
+
 - ✅ 143 個測試全部通過
 - ✅ Registry 模組覆蓋率 86.09%
 - ✅ TypeScript 編譯無錯誤
@@ -1088,6 +1129,7 @@ Total: 11 templates available
 #### 新增檔案
 
 **Registry 模組**:
+
 - [`src/utils/registry/types.ts`](../../../src/utils/registry/types.ts) - TypeScript 類型定義
 - [`src/utils/registry/validator.ts`](../../../src/utils/registry/validator.ts) - Registry 格式驗證
 - [`src/utils/registry/loader.ts`](../../../src/utils/registry/loader.ts) - Registry 載入器
@@ -1096,14 +1138,17 @@ Total: 11 templates available
 - [`src/utils/registry/index.ts`](../../../src/utils/registry/index.ts) - 模組匯出
 
 **List 命令**:
+
 - [`src/commands/listAction/listAction.ts`](../../../src/commands/listAction/listAction.ts) - List 命令實作
 - [`src/commands/listAction/index.ts`](../../../src/commands/listAction/index.ts) - 命令匯出
 
 **測試檔案**:
+
 - `src/utils/registry/*.test.ts` (5 個測試檔案)
 - `src/commands/listAction/listAction.test.ts`
 
 **設定範例**:
+
 - [`registry-config.example.json`](../../../registry-config.example.json) - Registry 設定範例
 
 #### 修改檔案
@@ -1117,6 +1162,7 @@ Total: 11 templates available
 ### 13.5 功能驗證
 
 #### 互動模式
+
 ```bash
 # 階層式選擇
 npx start-ts-by create my-project
@@ -1125,6 +1171,7 @@ npx start-ts-by create my-project
 ```
 
 #### List 命令
+
 ```bash
 # 一般模式
 npx start-ts-by --list
@@ -1137,12 +1184,13 @@ npx start-ts-by --list-verbose
 ```
 
 #### Registry Config
+
 ```json
 {
   "registries": [
     {
       "name": "start-ts-templates",
-      "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+      "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
       "enabled": true
     }
   ]
@@ -1159,6 +1207,7 @@ npx start-ts-by --list-verbose
 ### 13.7 向後相容性確認
 
 ✅ **所有現有功能正常運作**:
+
 - `--template` 參數正常
 - 內建 templates.json 不受影響
 - 沒有 registry-config.json 時使用預設行為
@@ -1174,16 +1223,19 @@ npx start-ts-by --list-verbose
 ### 13.9 未來改進方向
 
 #### 短期
+
 1. 實作快取機制（已預留介面）
 2. 建立官方 registry 範例 repository
 3. 改進錯誤訊息和使用者提示
 
 #### 中期
+
 1. 新增 registry 管理命令（add/remove/update）
 2. 支援私有 registry
 3. Template 搜尋和過濾功能
 
 #### 長期
+
 1. Registry 版本管理
 2. Template 評分和推薦系統
 3. 社群 Registry Hub

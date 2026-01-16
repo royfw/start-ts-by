@@ -14,6 +14,7 @@
 ### 1.1 背景
 
 當前 `--monorepo` 功能已經移除 4 個與 monorepo 管理機制衝突的檔案：
+
 - `pnpm-lock.yaml`
 - `package-lock.json`
 - `yarn.lock`
@@ -50,6 +51,7 @@
 #### 2.2.1 [`src/configs.ts`](../../src/configs.ts:32)
 
 **當前程式碼** (第 28-37 行):
+
 ```typescript
 /**
  * Monorepo 模式下需要移除的檔案清單
@@ -64,6 +66,7 @@ export const actionMonorepoFileNames = [
 ```
 
 **修改後**:
+
 ```typescript
 /**
  * Monorepo 模式下需要移除的檔案清單
@@ -79,11 +82,13 @@ export const actionMonorepoFileNames = [
 ```
 
 **變更說明**:
+
 - 在陣列第二位置插入 `'pnpm-workspace.yaml'`
 - 保持檔案清單的邏輯分組：pnpm 相關檔案在前
 - 陣列長度從 4 增加到 5
 
 **影響評估**:
+
 - ✅ 不影響現有邏輯，因為檔案清單是透過 [`getRmFlagRmList()`](../../src/commands/createAction/getRmFlagRmList.ts:3) 動態處理
 - ✅ 向後相容，不破壞現有功能
 - ⚠️ 需要同步更新測試斷言
@@ -101,6 +106,7 @@ export const actionMonorepoFileNames = [
 ##### Test Case 1: "should include monorepo files in remove list when --monorepo is true" (第 9-24 行)
 
 **當前斷言**:
+
 ```typescript
 expect(monorepoRmList).toHaveLength(4);
 expect(monorepoRmList).toEqual([
@@ -112,6 +118,7 @@ expect(monorepoRmList).toEqual([
 ```
 
 **修改後**:
+
 ```typescript
 expect(monorepoRmList).toHaveLength(5);
 expect(monorepoRmList).toEqual([
@@ -126,6 +133,7 @@ expect(monorepoRmList).toEqual([
 ##### Test Case 2: "should contain all required monorepo files" (第 76-81 行)
 
 **當前斷言**:
+
 ```typescript
 expect(actionMonorepoFileNames).toContain('pnpm-lock.yaml');
 expect(actionMonorepoFileNames).toContain('package-lock.json');
@@ -134,6 +142,7 @@ expect(actionMonorepoFileNames).toContain('.npmrc');
 ```
 
 **修改後**:
+
 ```typescript
 expect(actionMonorepoFileNames).toContain('pnpm-lock.yaml');
 expect(actionMonorepoFileNames).toContain('pnpm-workspace.yaml');
@@ -145,6 +154,7 @@ expect(actionMonorepoFileNames).toContain('.npmrc');
 ##### Test Case 3: "should have exactly 4 files" (第 83-85 行)
 
 **當前斷言**:
+
 ```typescript
 it('should have exactly 4 files', () => {
   expect(actionMonorepoFileNames).toHaveLength(4);
@@ -152,6 +162,7 @@ it('should have exactly 4 files', () => {
 ```
 
 **修改後**:
+
 ```typescript
 it('should have exactly 5 files', () => {
   expect(actionMonorepoFileNames).toHaveLength(5);
@@ -207,6 +218,7 @@ npm run test:coverage
 #### 位置 1: Monorepo Mode 章節 (第 44-58 行)
 
 **當前內容**:
+
 ```markdown
 #### Monorepo Mode
 ```sh
@@ -215,6 +227,7 @@ npx start-ts-by my-app -t user/repo --monorepo --ni
 ```
 
 **修改後**:
+
 ```markdown
 #### Monorepo Mode
 ```sh
@@ -225,6 +238,7 @@ npx start-ts-by my-app -t user/repo --monorepo --ni
 #### 位置 2: 檔案清單說明 (第 60-64 行)
 
 **當前內容**:
+
 ```markdown
 The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
 - `pnpm-lock.yaml`, `package-lock.json`, `yarn.lock` (lock files)
@@ -233,6 +247,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ```
 
 **修改後**:
+
 ```markdown
 The `--monorepo` flag (or interactive prompt) automatically removes files that conflict with monorepo root configuration:
 - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `package-lock.json`, `yarn.lock` (lock files and workspace config)
@@ -243,11 +258,13 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 #### 位置 3: CLI Help 輸出 (第 185 行)
 
 **當前內容**:
+
 ```
   --monorepo                        Remove monorepo conflicting files (lock files, .npmrc, packageManager field)
 ```
 
 **修改後**:
+
 ```
   --monorepo                        Remove monorepo conflicting files (lock files, workspace config, .npmrc, packageManager field)
 ```
@@ -257,6 +274,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 在 [`src/commands/createAction/createAction.ts`](../../src/commands/createAction/createAction.ts:361) 中：
 
 **當前內容** (第 361-364 行):
+
 ```typescript
 {
   flags: '--monorepo',
@@ -267,6 +285,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ```
 
 **修改後**:
+
 ```typescript
 {
   flags: '--monorepo',
@@ -283,11 +302,13 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 #### 修改點 1: Requirement 說明 (第 6 行)
 
 **當前內容**:
+
 ```markdown
 系統應提供 `--monorepo` 旗標，讓使用者可以建立適合 monorepo 環境的子專案，自動移除與 monorepo 管理機制衝突的檔案和設定。
 ```
 
 **修改後**:
+
 ```markdown
 系統應提供 `--monorepo` 旗標，讓使用者可以建立適合 monorepo 環境的子專案，自動移除與 monorepo 管理機制衝突的檔案和設定，包括 pnpm workspace 設定檔。
 ```
@@ -295,6 +316,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 #### 修改點 2: Scenario 檔案清單 (第 10-14 行)
 
 **當前內容**:
+
 ```markdown
 - **THEN** 系統應從生成的專案中移除以下檔案：
   - `pnpm-lock.yaml`
@@ -304,6 +326,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ```
 
 **修改後**:
+
 ```markdown
 - **THEN** 系統應從生成的專案中移除以下檔案：
   - `pnpm-lock.yaml`
@@ -330,6 +353,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 在 [`src/commands/createAction/createAction.ts`](../../src/commands/createAction/createAction.ts:289) 中：
 
 **當前內容** (第 288-292 行):
+
 ```typescript
 {
   key: 'monorepo',
@@ -339,6 +363,7 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ```
 
 **修改後**:
+
 ```typescript
 {
   key: 'monorepo',
@@ -363,16 +388,19 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ### 5.2 邊界案例處理
 
 #### Case 1: 模板不包含 pnpm-workspace.yaml
+
 **情境**: 使用的模板本身不是 pnpm workspace 專案
 **處理**: [`checkExistPathAndRemove()`](../../src/utils/checkExistPathAndRemove.ts) 已處理檔案不存在的情況，不會報錯
 **驗證**: 現有測試已覆蓋此場景
 
 #### Case 2: 檔案為唯讀
+
 **情境**: `pnpm-workspace.yaml` 為唯讀檔案
 **處理**: Node.js `fs.rmSync()` 會擲出錯誤
 **建議**: 新增錯誤處理提示使用者檢查檔案權限（可選，非本次變更範圍）
 
 #### Case 3: 符號連結
+
 **情境**: `pnpm-workspace.yaml` 為符號連結
 **處理**: `fs.rmSync()` 預設移除連結本身而非目標
 **驗證**: 現有行為已滿足需求
@@ -380,11 +408,13 @@ The `--monorepo` flag (or interactive prompt) automatically removes files that c
 ### 5.3 相容性分析
 
 #### 向後相容性
+
 - ✅ **完全相容**: 僅新增清單項目，不修改邏輯
 - ✅ **不影響現有使用者**: 未使用 `--monorepo` 的使用者無感知
 - ✅ **可預測行為**: 符合使用者對 `--monorepo` 的預期
 
 #### 前向相容性
+
 - ✅ **可擴展**: 未來可繼續新增其他 monorepo 相關檔案
 - ✅ **設計一致**: 遵循現有 `actionMonorepoFileNames` 模式
 
@@ -407,14 +437,17 @@ graph TD
 ### 6.2 詳細步驟
 
 #### Step 1: 修改核心設定檔 ⏱️ 2 分鐘
+
 **檔案**: [`src/configs.ts`](../../src/configs.ts:32)
 
 **操作**:
+
 1. 找到 `actionMonorepoFileNames` 常數定義（第 32 行）
 2. 在 `'pnpm-lock.yaml'` 之後插入 `'pnpm-workspace.yaml'`
 3. 確認逗號和格式正確
 
 **驗證**:
+
 ```bash
 # 確認語法無誤
 npm run typecheck
@@ -425,15 +458,18 @@ npm run typecheck
 ---
 
 #### Step 2: 更新測試案例 ⏱️ 5 分鐘
+
 **檔案**: [`src/commands/createAction/createAction.monorepo.test.ts`](../../src/commands/createAction/createAction.monorepo.test.ts:1)
 
 **操作**:
+
 1. 修改第 17 行：`toHaveLength(4)` → `toHaveLength(5)`
 2. 修改第 18-23 行：在陣列中插入 `{ field: 'pnpm-workspace.yaml', isRemove: true }`
 3. 修改第 77-80 行：新增 `toContain('pnpm-workspace.yaml')`
 4. 修改第 84 行：`toHaveLength(4)` → `toHaveLength(5)`
 
 **驗證**:
+
 ```bash
 # 執行特定測試檔案
 npm run test src/commands/createAction/createAction.monorepo.test.ts
@@ -446,6 +482,7 @@ npm run test src/commands/createAction/createAction.monorepo.test.ts
 #### Step 3: 執行測試驗證 ⏱️ 3 分鐘
 
 **操作**:
+
 ```bash
 # 1. 執行完整測試套件
 npm test
@@ -458,6 +495,7 @@ npm run lint
 ```
 
 **通過標準**:
+
 - [ ] 所有單元測試通過
 - [ ] 測試覆蓋率維持 ≥ 原有百分比
 - [ ] 無 lint 錯誤或警告
@@ -467,6 +505,7 @@ npm run lint
 #### Step 4: 更新文件 ⏱️ 10 分鐘
 
 **檔案清單**:
+
 1. [`README.md`](../../README.md)
 2. [`src/commands/createAction/createAction.ts`](../../src/commands/createAction/createAction.ts) (CLI description)
 3. `openspec/changes/add-monorepo-flag/specs/project-creation/spec.md`
@@ -475,6 +514,7 @@ npm run lint
 按照 **4. 文件更新** 章節的內容逐一修改
 
 **驗證**:
+
 ```bash
 # 檢查 CLI help 輸出
 npx tsx src/index.ts create --help | grep monorepo
@@ -483,6 +523,7 @@ npx tsx src/index.ts create --help | grep monorepo
 ```
 
 **通過標準**:
+
 - [ ] README.md 清單包含 `pnpm-workspace.yaml`
 - [ ] CLI help 描述包含 "workspace config"
 - [ ] OpenSpec 場景已更新
@@ -494,6 +535,7 @@ npx tsx src/index.ts create --help | grep monorepo
 **手動測試案例**:
 
 ##### Test 5.1: 非互動模式測試
+
 ```bash
 # 1. 建立測試用模板（包含 pnpm-workspace.yaml）
 mkdir -p /tmp/test-template
@@ -514,13 +556,14 @@ cd .. && rm -rf test-project /tmp/test-template
 **通過標準**: `pnpm-workspace.yaml` 不存在於生成的專案中
 
 ##### Test 5.2: 互動模式測試
+
 ```bash
 # 執行互動模式（需手動回答提示）
 npx tsx src/index.ts --monorepo
 
 # 輸入：
 # - Project name: test-interactive
-# - Template: royfuwei/starter-ts-lib
+# - Template: royfw/starter-ts-lib
 # - Enable monorepo mode? y
 
 # 驗證
@@ -529,6 +572,7 @@ ls -la | grep pnpm-workspace.yaml  # 應該找不到
 ```
 
 ##### Test 5.3: 與 --rm 組合測試
+
 ```bash
 npx tsx src/index.ts test-combo -t file:/tmp/test-template --monorepo --rm README.md --ni
 
@@ -553,6 +597,7 @@ diff -u <(sed -n '/^## CLI Help/,/^##/p' README.md | grep monorepo) \
 ```
 
 **通過標準**:
+
 - [ ] README.md 與實際 CLI help 一致
 - [ ] 所有範例程式碼可執行
 - [ ] 檔案清單在所有文件中一致
@@ -577,11 +622,12 @@ npm run lint
 npm run build
 
 # 5. 手動冒煙測試
-npx tsx src/index.ts smoke-test -t royfuwei/starter-ts-lib --monorepo --ni
+npx tsx src/index.ts smoke-test -t royfw/starter-ts-lib --monorepo --ni
 cd smoke-test && npm install && npm test
 ```
 
 **完成標準**:
+
 - [ ] ✅ 所有自動化測試通過
 - [ ] ✅ 建置成功
 - [ ] ✅ 手動測試通過
@@ -646,6 +692,7 @@ npm run test:coverage
 ### 7.2 手動功能驗證
 
 #### 驗證場景 1: 基本功能
+
 ```bash
 # 建立包含 pnpm-workspace.yaml 的測試模板
 mkdir -p /tmp/pnpm-template
@@ -664,6 +711,7 @@ npx start-ts-by test-project -t file:/tmp/pnpm-template --monorepo --ni
 ```
 
 #### 驗證場景 2: 檔案不存在時的優雅處理
+
 ```bash
 # 建立不含 pnpm-workspace.yaml 的模板
 mkdir -p /tmp/no-workspace-template
@@ -677,6 +725,7 @@ npx start-ts-by test-no-workspace -t file:/tmp/no-workspace-template --monorepo 
 ```
 
 #### 驗證場景 3: 與其他參數組合
+
 ```bash
 # 測試 --monorepo 與 --rm 組合
 npx start-ts-by test-combo -t file:/tmp/pnpm-template --monorepo --rm .github --ni
@@ -706,7 +755,7 @@ npx start-ts-by create --help | grep -A 1 monorepo
 npm test
 
 # 確認非 --monorepo 模式不受影響
-npx start-ts-by test-normal -t royfuwei/starter-ts-lib --ni
+npx start-ts-by test-normal -t royfw/starter-ts-lib --ni
 [ -f test-normal/pnpm-lock.yaml ] && echo "✅ PASS: Normal mode unaffected" || echo "❌ FAIL"
 ```
 
@@ -801,6 +850,7 @@ sequenceDiagram
 ### 9.4 問題排查指南
 
 #### 問題 1: 測試失敗 - Length mismatch
+
 **症狀**: `expect(received).toHaveLength(expected)`  
          `Expected length: 5`  
          `Received length: 4`
@@ -808,6 +858,7 @@ sequenceDiagram
 **原因**: 忘記修改 `configs.ts` 或修改位置錯誤
 
 **解決**:
+
 ```bash
 # 1. 確認 configs.ts 修改
 grep -A 5 "actionMonorepoFileNames" src/configs.ts
@@ -816,11 +867,13 @@ grep -A 5 "actionMonorepoFileNames" src/configs.ts
 ```
 
 #### 問題 2: CLI help 未更新
+
 **症狀**: 執行 `--help` 看不到更新的描述
 
 **原因**: 未修改 `createAction.ts` 的 description 欄位
 
 **解決**:
+
 ```bash
 # 確認描述已更新
 grep -A 2 "flags: '--monorepo'" src/commands/createAction/createAction.ts
@@ -829,11 +882,13 @@ grep -A 2 "flags: '--monorepo'" src/commands/createAction/createAction.ts
 ```
 
 #### 問題 3: 檔案未被移除
+
 **症狀**: 使用 `--monorepo` 後 `pnpm-workspace.yaml` 仍存在
 
 **原因**: 可能是 `checkExistPathAndRemove` 邏輯問題
 
 **除錯**:
+
 ```typescript
 // 在 createProject.ts 中加入除錯訊息
 console.log('removeList:', removeList);
@@ -880,6 +935,7 @@ console.log('removeList:', removeList);
 ### 10.4 批准建議
 
 本設計方案建議：
+
 - ✅ **批准實作**: 變更明確、風險低、效益高
 - ⏱️ **實作時間**: 預計 45 分鐘完成
 - 🎯 **優先級**: P1（高優先級，解決實際使用痛點）

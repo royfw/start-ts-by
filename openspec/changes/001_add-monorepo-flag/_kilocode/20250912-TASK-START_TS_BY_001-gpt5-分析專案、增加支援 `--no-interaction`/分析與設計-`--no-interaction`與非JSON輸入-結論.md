@@ -33,18 +33,20 @@
 #### 1.2 CLI 使用範例
 
 **基本非互動使用**
+
 ```bash
 # 最簡單的非互動模式
-npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
+npx start-ts-by my-app -t royfw/starter-ts-app --no-interaction
 
 # 使用別名
-npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
+npx start-ts-by my-app -t royfw/starter-ts-app --ni
 
 # 搭配自動確認
-npx start-ts-by my-app -t royfuwei/starter-ts-app --ni --yes
+npx start-ts-by my-app -t royfw/starter-ts-app --ni --yes
 ```
 
 **進階變數設定**
+
 ```bash
 # 使用 --vars 設定基本參數
 npx start-ts-by my-app -t user/repo --ni --vars name=my-app,template=user/repo
@@ -67,6 +69,7 @@ npx start-ts-by my-app -t user/repo --ni --vars-file ./.stb.vars --vars name=ove
 ```
 
 **模板來源語法範例**
+
 ```bash
 # GitHub 標準格式
 npx start-ts-by my-app --ni -t user/repo
@@ -86,6 +89,7 @@ npx start-ts-by my-app --ni -t ./templates/basic-app
 #### 2.1 `--vars` 參數語法
 
 **基本語法規則**
+
 ```bash
 --vars key=value
 --vars key1=value1,key2=value2
@@ -93,6 +97,7 @@ npx start-ts-by my-app --ni -t ./templates/basic-app
 ```
 
 **巢狀物件語法**
+
 ```bash
 --vars project.name=my-app
 --vars project.config.debug=true
@@ -100,6 +105,7 @@ npx start-ts-by my-app --ni -t ./templates/basic-app
 ```
 
 **陣列索引語法**
+
 ```bash
 --vars removeList[0].field=README.md
 --vars removeList[0].isRemove=true
@@ -108,11 +114,13 @@ npx start-ts-by my-app --ni -t ./templates/basic-app
 ```
 
 **型別自動轉換**
+
 - **布林值**：`true`、`false`、`yes`、`no`、`1`、`0`
 - **數字**：自動辨識整數和浮點數
 - **字串**：預設型別，支援引號包圍
 
 **檔案內容引用**
+
 ```bash
 --vars token=@./secrets/api-token.txt
 --vars config=@./config.json
@@ -121,10 +129,11 @@ npx start-ts-by my-app --ni -t ./templates/basic-app
 #### 2.2 `--vars-file` 檔案格式
 
 **基本 .stb.vars 檔案格式**
+
 ```ini
 # 專案基本設定
 name=my-awesome-app
-template=royfuwei/starter-ts-app
+template=royfw/starter-ts-app
 
 # 移除檔案設定
 removeList[0].field=README.md
@@ -144,6 +153,7 @@ project.description=My awesome TypeScript project
 ```
 
 **進階檔案功能**
+
 ```ini
 # 支援註解
 # 這是註解行
@@ -166,6 +176,7 @@ certificate=@./certs/ssl.pem
 #### 3.1 參數來源優先序
 
 **優先序排列（高到低）**
+
 1. **CLI `--vars` 參數**：最高優先權
 2. **`--vars-file` 檔案**：中等優先權
 3. **CLI 個別旗標**：如 `--template`、`--rm` 等
@@ -176,20 +187,24 @@ certificate=@./certs/ssl.pem
 #### 3.2 參數合併策略
 
 **物件合併**
+
 - 深度合併巢狀物件
 - 相同鍵值以高優先序覆蓋低優先序
 
 **陣列合併**
+
 - 完全替換，不進行元素級別合併
 - 提供 `--vars-merge-arrays` 旗標控制合併行為（可選功能）
 
 **衝突處理**
+
 - 預設：警告並使用高優先序值
 - 嚴格模式 `--strict`：將警告升級為錯誤
 
 #### 3.3 變數映射表
 
 **核心參數映射**
+
 ```typescript
 interface NonInteractiveConfig {
   // 基本參數
@@ -224,6 +239,7 @@ interface NonInteractiveConfig {
 #### 4.1 必要參數檢查
 
 **缺少必要參數錯誤**
+
 ```bash
 ❌ Error: Missing required parameters for non-interactive mode
 Required: name, template
@@ -231,11 +247,12 @@ Provided: name
 Missing: template
 
 Suggestions:
-  npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
-  npx start-ts-by my-app --vars template=royfuwei/starter-ts-app --no-interaction
+  npx start-ts-by my-app -t royfw/starter-ts-app --no-interaction
+  npx start-ts-by my-app --vars template=royfw/starter-ts-app --no-interaction
 ```
 
 **型別錯誤**
+
 ```bash
 ❌ Error: Invalid parameter type
 Parameter: removeList[0].isRemove
@@ -247,6 +264,7 @@ Valid values: true, false, yes, no, 1, 0
 #### 4.2 檔案相關錯誤
 
 **設定檔案不存在**
+
 ```bash
 ❌ Error: Configuration file not found
 File: ./.stb.vars
@@ -256,6 +274,7 @@ Suggestion: Create a .stb.vars file or use --vars instead
 ```
 
 **引用檔案錯誤**
+
 ```bash
 ❌ Error: Referenced file not found
 Reference: @./secrets/api-token.txt
@@ -277,10 +296,12 @@ Suggestion: Ensure the file exists and is readable
 #### 5.1 向後相容策略
 
 **保留現有旗標**
+
 - `--skip-prompt` 繼續支援，但標示為 deprecated
 - 行為保持不變，避免破壞現有腳本
 
 **漸進升級提示**
+
 ```bash
 ⚠️  Warning: --skip-prompt is deprecated, use --no-interaction instead
    This flag will be removed in v1.0.0
@@ -301,6 +322,7 @@ Suggestion: Ensure the file exists and is readable
 #### 6.1 README.md 更新內容
 
 **新增章節**
+
 ```markdown
 ### Non-Interactive Mode
 
@@ -320,6 +342,7 @@ npx start-ts-by my-app -t user/repo --ni --vars-file ./.stb.vars
 #### Variables Configuration
 
 **Command Line Variables**
+
 - `--vars key=value` - Set individual variables
 - `--vars key1=value1,key2=value2` - Set multiple variables
 - Nested: `--vars project.name=my-app`
@@ -327,12 +350,14 @@ npx start-ts-by my-app -t user/repo --ni --vars-file ./.stb.vars
 
 **Configuration File**
 Create a `.stb.vars` file:
+
 ```ini
 name=my-app
 template=user/repo
 removeList[0].field=README.md
 removeList[0].isRemove=true
 ```
+
 ```
 
 #### 6.2 CLI Help 更新
@@ -387,29 +412,30 @@ Create Command Options:
 
 **新增檔案清單**
 
-4. **`src/utils/parseVarsArgument.ts`**
+1. **`src/utils/parseVarsArgument.ts`**
    - 解析 `--vars` 參數字串
    - 支援巢狀鍵與陣列索引
    - 型別自動轉換邏輯
 
-5. **`src/utils/parseVarsFile.ts`**
+2. **`src/utils/parseVarsFile.ts`**
    - 讀取並解析 `.stb.vars` 檔案
    - 支援註解、包含檔案、檔案引用
    - 錯誤處理與驗證
 
-6. **`src/utils/mergeConfigSources.ts`**
+3. **`src/utils/mergeConfigSources.ts`**
    - 實現參數來源優先序合併
    - 深度物件合併邏輯
    - 衝突檢測與警告
 
-7. **`src/utils/validateNonInteractiveConfig.ts`**
+4. **`src/utils/validateNonInteractiveConfig.ts`**
    - 驗證非互動模式必要參數
    - 型別檢查與錯誤訊息生成
    - 提供修正建議
 
 **CLI 設定更新**
 
-8. **[`src/commands/createAction/createAction.ts`](../../../src/commands/createAction/createAction.ts) - flagsOptions**
+1. **[`src/commands/createAction/createAction.ts`](../../../src/commands/createAction/createAction.ts) - flagsOptions**
+
    ```typescript
    flagsOptions: [
      // ... 現有旗標
@@ -442,21 +468,25 @@ Create Command Options:
 #### 7.2 實作流程建議
 
 **階段一：基礎非互動功能**
+
 1. 實作基本的 `--no-interaction` 旗標
 2. 修改現有互動函式支援跳過邏輯
 3. 確保必要參數檢查機制
 
 **階段二：變數解析功能**
+
 1. 實作 `--vars` 參數解析
 2. 實作 `--vars-file` 檔案讀取
 3. 實作參數合併與優先序邏輯
 
 **階段三：錯誤處理與使用者體驗**
+
 1. 完善錯誤訊息與退出碼
 2. 新增警告與建議機制
 3. 實作 `--strict` 模式
 
 **階段四：測試與文檔**
+
 1. 新增單元測試覆蓋所有新功能
 2. 新增 e2e 測試驗證完整流程
 3. 更新文檔與 CLI help
@@ -488,21 +518,25 @@ Create Command Options:
 **E2E 測試案例**
 
 1. **基本非互動模式**
+
    ```bash
    npm test -- --testNamePattern="non-interactive basic usage"
    ```
 
 2. **變數設定測試**
+
    ```bash
    npm test -- --testNamePattern="vars parameter parsing"
    ```
 
 3. **檔案設定測試**
+
    ```bash
    npm test -- --testNamePattern="vars-file configuration"
    ```
 
 4. **錯誤處理測試**
+
    ```bash
    npm test -- --testNamePattern="error handling and validation"
    ```

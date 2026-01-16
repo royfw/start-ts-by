@@ -2,7 +2,7 @@
     "registries": [
         {
             "name": "start-ts-templates",
-            "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+            "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
             "enabled": true
         }
     ],

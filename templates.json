@@ -1,26 +1,26 @@
 [
   {
     "name": "Starter TypeScript App",
-    "repo": "royfuwei/starter-ts-app"
+    "repo": "royfw/starter-ts-app"
   },
   {
     "name": "Starter TypeScript Library",
-    "repo": "royfuwei/starter-ts-lib"
+    "repo": "royfw/starter-ts-lib"
   },
   {
     "name": "Starter TypeScript TurboRepo",
-    "repo": "royfuwei/starter-turbo"
+    "repo": "royfw/starter-turbo"
   },
   {
     "name": "Starter TypeScript Bin Command",
-    "repo": "royfuwei/starter-ts-bin"
+    "repo": "royfw/starter-ts-bin"
   },
   {
     "name": "Starter TypeScript App - Fastify Framework",
-    "repo": "royfuwei/starter-ts-fastify"
+    "repo": "royfw/starter-ts-fastify"
   },
   {
     "name": "Starter TypeScript App - Koa Framework",
-    "repo": "royfuwei/starter-ts-koa"
+    "repo": "royfw/starter-ts-koa"
   }
 ]

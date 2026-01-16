@@ -1,6 +1,5 @@
 # start-ts-by
 
-
 快速透過 **任意 git 或本地模板** 建立 TypeScript 專案。
 支援 GitHub/GitLab/自架 Git/SSH/HTTP/本地資料夾，彈性指定 branch/tag、子目錄。
 
@@ -22,24 +21,26 @@ npx start-ts-by
 ✔ 請輸入專案名稱 my-app
 ✔ 請輸入模板 (如 user/repo, ./local-path, git@domain:group/repo.git):
 ? 請選擇模板 (方向鍵選擇)
-❯ royfuwei/starter-ts-app (Starter TypeScript App)
-  royfuwei/starter-ts-lib (Starter TypeScript Library)
+❯ royfw/starter-ts-app (Starter TypeScript App)
+  royfw/starter-ts-lib (Starter TypeScript Library)
   ...
 ```
 
 ### 非互動模式
 
 #### 基本用法
+
 ```sh
 # 使用 --no-interaction (--ni) 旗標
-npx start-ts-by my-app -t royfuwei/starter-ts-app --no-interaction
-npx start-ts-by my-app -t royfuwei/starter-ts-app --ni
+npx start-ts-by my-app -t royfw/starter-ts-app --no-interaction
+npx start-ts-by my-app -t royfw/starter-ts-app --ni
 
 # 舊版 --skip-prompt 旗標（已棄用，建議使用 --no-interaction）
-npx start-ts-by my-app --skip-prompt -t royfuwei/starter-ts-app
+npx start-ts-by my-app --skip-prompt -t royfw/starter-ts-app
 ```
 
 #### Monorepo 模式
+
 ```sh
 # 非互動模式：移除 lock 檔案、workspace 設定、.npmrc、以及 package.json 中的 packageManager 欄位
 npx start-ts-by my-app -t user/repo --monorepo --ni
@@ -57,6 +58,7 @@ npx start-ts-by my-app -t user/repo
 ```
 
 `--monorepo` 旗標（或互動式提示）會自動移除與 monorepo 根層設定衝突的檔案：
+
 - `pnpm-lock.yaml`、`pnpm-workspace.yaml`、`package-lock.json`、`yarn.lock`（lock 檔案與 workspace 設定）
 - `.npmrc`（套件管理器設定）
 - `.husky` 目錄以及 package.json 中包含 "husky" 的 `prepare` script
@@ -64,6 +66,7 @@ npx start-ts-by my-app -t user/repo
 - package.json 中的 `packageManager` 欄位
 
 **互動模式行為：**
+
 - 如果在啟動時提供 `--monorepo` 旗標，在提示中會預先選中
 - 如果未提供旗標，會在互動式提示中詢問
 - 預設為 `false`（未啟用）- 按 Enter 跳過或輸入 'y' 啟用
@@ -71,6 +74,7 @@ npx start-ts-by my-app -t user/repo
 這在建立 monorepo 的子專案時很有用，因為這些檔案應該在根層級管理。
 
 #### 進階非互動模式與變數
+
 ```sh
 # 使用 --vars 設定內嵌變數
 npx start-ts-by my-app --ni --vars name=my-app,template=user/repo
@@ -84,6 +88,7 @@ npx start-ts-by my-app --ni --vars-file ./base.vars --vars template=user/custom-
 ```
 
 #### 變數檔案格式 (.vars)
+
 建立包含 key=value 對的 `.vars` 檔案：
 
 ```bash
@@ -110,8 +115,9 @@ execList[0].isExec=true
 ```
 
 #### 模板來源支援 branch/子目錄
+
 ```sh
-npx start-ts-by my-app -t royfuwei/starter-ts-app#dev/subdir --ni
+npx start-ts-by my-app -t royfw/starter-ts-app#dev/subdir --ni
 npx start-ts-by my-app -t git@your.gitlab:group/repo.git#v2/templates --ni
 npx start-ts-by my-app -t ./my-template-folder/subdir --ni
 ```
@@ -162,7 +168,7 @@ npx start-ts-by --list-verbose
   "registries": [
     {
       "name": "start-ts-templates",
-      "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+      "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
       "enabled": true
     }
   ],
@@ -202,23 +208,23 @@ npx start-ts-by --list-verbose
 
 ### 官方 Template 集合
 
-請造訪 [start-ts-templates](https://github.com/royfuwei/start-ts-templates) repository 取得官方 template 集合與 registry 設定檔。
+請造訪 [start-ts-templates](https://github.com/royfw/start-ts-templates) repository 取得官方 template 集合與 registry 設定檔。
 
 ---
 
 ## 📝 支援的模板來源與語法
 
-* **GitHub**
+- **GitHub**
   `user/repo`
   `user/repo#branch`
   `user/repo#branch/subdir`
   `user/repo/subdir`
 
-* **自架 Git、GitLab、Bitbucket、Gitea 等**
+- **自架 Git、GitLab、Bitbucket、Gitea 等**
   `git@your.gitlab:group/repo.git#branch/subdir`
   `https://your.gitlab/group/repo.git#tag/subdir`
 
-* **本地資料夾**
+- **本地資料夾**
   `./my-template`
   `./my-template/subdir`
   `file:./my-template#subdir`
@@ -227,10 +233,10 @@ npx start-ts-by --list-verbose
 
 ## ⚡ 運作方式
 
-* **已移除 degit 相依，全部改用 git 指令。**
-* 會根據解析後的模板來源，用 git clone 或直接複製資料夾。
-* 所有 git repo 均可指定 branch/tag 及子目錄。
-* 相容 GitHub、GitLab、自架、私有 git、SSH/HTTP、本地路徑。
+- **已移除 degit 相依，全部改用 git 指令。**
+- 會根據解析後的模板來源，用 git clone 或直接複製資料夾。
+- 所有 git repo 均可指定 branch/tag 及子目錄。
+- 相容 GitHub、GitLab、自架、私有 git、SSH/HTTP、本地路徑。
 
 ---
 
@@ -276,6 +282,7 @@ Options:
 ```
 
 ### 變數優先序（由高到低）
+
 1. `--vars` 命令列參數
 2. `--vars-file` 檔案內容
 3. 個別旗標（`-t`, `--rm` 等）
@@ -284,6 +291,7 @@ Options:
 6. 預設值
 
 ### 錯誤處理
+
 - 非互動模式需要 `name` 和 `template` 參數
 - 缺少必要參數時以退出碼 2 結束
 - 檔案讀取錯誤和解析失敗會提供具體錯誤訊息
@@ -293,11 +301,11 @@ Options:
 
 ## 參考文件
 
-* [Development](./development.md)
+- [Development](./development.md)
 
 ---
 
 **重點說明：**
 
-* 已經不再依賴 degit，所有模板皆以 git 指令或複製本地資料夾方式取得。
-* Template source 字串可同時指定 repo、branch/tag、子目錄。
+- 已經不再依賴 degit，所有模板皆以 git 指令或複製本地資料夾方式取得。
+- Template source 字串可同時指定 repo、branch/tag、子目錄。

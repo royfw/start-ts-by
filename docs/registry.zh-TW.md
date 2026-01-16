@@ -15,7 +15,7 @@ Registry 系統允許 `start-ts-by` 從外部來源載入 template 定義，讓�
   "registries": [
     {
       "name": "start-ts-templates",
-      "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+      "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
       "enabled": true
     }
   ],
@@ -58,16 +58,19 @@ Registry 系統允許 `start-ts-by` 從外部來源載入 template 定義，讓�
 ### 欄位說明
 
 #### 必要欄位
+
 - `repo`: GitHub repository (格式: `owner/repo`)
 - `defaultRef`: 預設 Git ref (branch/tag)
 - `templates`: Template 定義陣列
 
 #### Template 必要欄位
+
 - `id`: 唯一識別碼（不可重複）
 - `path`: Template 在 repository 中的路徑
 - `title`: 顯示名稱
 
 #### 選用欄位
+
 - `version`: Registry 版本
 - `name`: Registry 名稱
 - `description`: Registry 描述
@@ -132,6 +135,7 @@ npx start-ts-by --list-verbose
 ## 錯誤處理
 
 如果無法載入 registry：
+
 - 系統會顯示警告訊息
 - 仍可使用內建 templates
 - 可選擇手動輸入 GitHub URL
@@ -146,18 +150,23 @@ npx start-ts-by --list-verbose
 ## 常見問題
 
 ### Q: Registry 會快取嗎？
+
 A: 是的，載入的 registry 會被快取以提升效能。可透過 `cacheTTL` 設定快取時間。
 
 ### Q: 可以使用本地 registry.json 嗎？
+
 A: 目前系統設計為從網路載入，但可以透過修改程式碼支援本地檔案。
 
 ### Q: 如何停用某個 registry？
+
 A: 在 `registry-config.json` 中將對應 registry 的 `enabled` 設為 `false`。
 
 ### Q: 可以同時使用多個 registry 嗎？
+
 A: 可以，在 `registries` 陣列中新增多個 registry 設定即可。
 
 ### Q: Registry 載入失敗會影響專案建立嗎？
+
 A: 不會，即使 registry 載入失敗，你仍然可以使用內建 templates 或手動輸入 GitHub URL。
 
 ## 進階使用

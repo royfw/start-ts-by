@@ -15,7 +15,7 @@ Create `registry-config.json` in your project root:
   "registries": [
     {
       "name": "start-ts-templates",
-      "url": "https://raw.githubusercontent.com/royfuwei/start-ts-templates/main/registry.json",
+      "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
       "enabled": true
     }
   ],
@@ -58,16 +58,19 @@ Create `registry-config.json` in your project root:
 ### Field Descriptions
 
 #### Required Fields
+
 - `repo`: GitHub repository (format: `owner/repo`)
 - `defaultRef`: Default Git ref (branch/tag)
 - `templates`: Array of template definitions
 
 #### Template Required Fields
+
 - `id`: Unique identifier (must be unique)
 - `path`: Template path in the repository
 - `title`: Display name
 
 #### Optional Fields
+
 - `version`: Registry version
 - `name`: Registry name
 - `description`: Registry description
@@ -132,6 +135,7 @@ npx start-ts-by --list-verbose
 ## Error Handling
 
 If a registry cannot be loaded:
+
 - The system will display a warning message
 - Built-in templates remain available
 - You can still manually input a GitHub URL
@@ -146,18 +150,23 @@ If a registry cannot be loaded:
 ## Frequently Asked Questions
 
 ### Q: Are registries cached?
+
 A: Yes, loaded registries are cached to improve performance. You can configure cache duration using `cacheTTL`.
 
 ### Q: Can I use a local registry.json?
+
 A: The current system is designed to load from the network, but it can be modified to support local files.
 
 ### Q: How do I disable a specific registry?
+
 A: Set the `enabled` field to `false` for the corresponding registry in `registry-config.json`.
 
 ### Q: Can I use multiple registries simultaneously?
+
 A: Yes, you can add multiple registry configurations in the `registries` array.
 
 ### Q: Will a registry loading failure affect project creation?
+
 A: No, even if a registry fails to load, you can still use built-in templates or manually input a GitHub URL.
 
 ## Advanced Usage
