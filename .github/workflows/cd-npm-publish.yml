@@ -44,7 +44,7 @@ jobs:
   publish:
     needs: resolve
     if: needs.resolve.outputs.channel != ''
-    uses: royfuwei/rf-devops/.github/workflows/_changesets-publish-only.yml@main
+    uses: royfw/rf-devops/.github/workflows/_changesets-publish-only.yml@main
     secrets:
       GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

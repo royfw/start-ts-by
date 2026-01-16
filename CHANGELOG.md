@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.1-alpha.0
+
+### Patch Changes
+
+- 9aefb55: fix(init): remove preinstall and prepare scripts in monorepo mode
+
+  Clean up preinstall and prepare scripts when initializing project in monorepo mode to
+  prevent script conflicts and ensure cleaner package initialization.
+
+- 0cc896b: feat(registry): reorder template sources and update display names
+
+  Prioritize external registries over built-in templates by loading them first.
+  Prefix registry names with '(Registry)' and built-in templates with '(Default)' for better
+  clarity in the selection prompt. Update tests to reflect the naming changes.
+
 ## 0.4.0
 
 ### Minor Changes
