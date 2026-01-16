@@ -5,6 +5,7 @@
     "start-ts-by": "0.4.0"
   },
   "changesets": [
+    "clean-buckets-exist",
     "spotty-pugs-laugh",
     "tender-dragons-heal"
   ]
