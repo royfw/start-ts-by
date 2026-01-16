@@ -35,8 +35,9 @@
     "jest:e2e:web": "npm run jest:e2e && npx http-server ./.test/jest-e2e",
     "jest:e2e:cov": "jest --config jest.config.e2e.ts --verbose --coverage",
     "commit": "npx cz",
-    "changeset": "npx @changeset/cli",
-    "changeset:version": "npx @changeset/cli version",
+    "changeset:add": "pnpm exec changeset",
+    "changeset:status": "pnpm exec changeset status",
+    "changeset:version": "pnpm exec changeset version",
     "prepare": "npx husky",
     "preinstall": "npx -y only-allow pnpm",
     "docs:dev": "vitepress dev docs",
@@ -57,11 +58,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/royfuwei/start-ts-by.git"
+    "url": "git+https://github.com/royfw/start-ts-by.git"
   },
-  "homepage": "https://royfuwei.github.io/start-ts-by/",
+  "homepage": "https://royfw.github.io/start-ts-by/",
   "keywords": [],
-  "author": "royfuwei",
+  "author": "roy.chuang",
   "license": "ISC",
   "packageManager": "pnpm@10.0.0+sha512.b8fef5494bd3fe4cbd4edabd0745df2ee5be3e4b0b8b08fa643aa3e4c6702ccc0f00d68fa8a8c9858a735a0032485a44990ed2810526c875e416f001b17df12b",
   "devDependencies": {
