@@ -35,7 +35,7 @@ describe('registry/resolver', () => {
 
       expect(sources).toHaveLength(1);
       expect(sources[0].type).toBe('builtin');
-      expect(sources[0].name).toBe('Built-in Templates');
+      expect(sources[0].name).toBe('(Default) Built-in Templates');
       expect(sources[0].templates).toHaveLength(2);
       expect(sources[0].templates[0].id).toBe('user/repo1');
       expect(sources[0].templates[0].title).toBe('Test Template 1');
