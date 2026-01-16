@@ -1,20 +1,20 @@
 name: Version (release/stable)
 
 on:
-    pull_request_target:
-        branches: [release/stable]
-        types: [closed]
+  pull_request_target:
+    branches: [release/stable]
+    types: [closed]
 
 permissions:
-    contents: write
-    pull-requests: write
+  contents: write
+  pull-requests: write
 
 jobs:
-    version:
-        if: github.event.pull_request.merged == true
-        uses: royfuwei/rf-devops/.github/workflows/_changesets-version-channel.yml@main
-        secrets:
-            GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
-        with:
-            ref: release/stable
-            channel: stable
+  version:
+    if: github.event.pull_request.merged == true
+    uses: royfw/rf-devops/.github/workflows/_changesets-version-channel.yml@main
+    secrets:
+      GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+    with:
+      ref: release/stable
+      channel: stable
