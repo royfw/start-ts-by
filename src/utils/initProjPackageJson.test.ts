@@ -60,9 +60,32 @@ describe('initProjPackageJson', () => {
       initProjPackageJson(testDir, true, true, removeList);
 
       // 驗證 prepare script 和 packageManager 都被移除
+      // 驗證 prepare script 和 packageManager 都被移除
+      const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+      expect(updatedPackageJson.packageManager).toBeUndefined();
+    });
+
+    it('should remove preinstall and prepare scripts in monorepo mode', () => {
+      // 建立測試用的 package.json
+      const originalPackageJson = {
+        name: 'test-project',
+        version: '1.0.0',
+        scripts: {
+          prepare: 'npx husky',
+          preinstall: 'npx -y only-allow pnpm',
+          test: 'vitest',
+        },
+      };
+      fs.writeFileSync(packageJsonPath, JSON.stringify(originalPackageJson, null, 2));
+
+      // 執行函數
+      initProjPackageJson(testDir, true, true, []);
+
+      // 驗證 scripts 被移除
       const updatedPackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
       expect(updatedPackageJson.scripts.prepare).toBeUndefined();
-      expect(updatedPackageJson.packageManager).toBeUndefined();
+      expect(updatedPackageJson.scripts.preinstall).toBeUndefined();
+      expect(updatedPackageJson.scripts.test).toBe('vitest');
     });
 
     it('should not remove prepare script when .husky is not in remove list', () => {

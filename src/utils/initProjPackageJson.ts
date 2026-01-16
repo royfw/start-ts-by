@@ -21,10 +21,25 @@ export function initProjPackageJson(
     packageJson.description = `A project created by ${originalName}`;
     packageJson.version = '0.0.0';
 
-    // 在 monorepo 模式下移除 packageManager 欄位
-    if (isMonorepo && packageJson.packageManager) {
-      delete packageJson.packageManager;
-      console.info(`🔧 Removed packageManager field for monorepo mode`);
+    // 在 monorepo 模式下移除 packageManager 欄位及相關 scripts
+    if (isMonorepo) {
+      if (packageJson.packageManager) {
+        delete packageJson.packageManager;
+        console.info(`🔧 Removed packageManager field for monorepo mode`);
+      }
+
+      if (packageJson.scripts) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const scripts = packageJson.scripts as any;
+        if (scripts.preinstall) {
+          delete scripts.preinstall;
+          console.info(`🔧 Removed preinstall script for monorepo mode`);
+        }
+        if (scripts.prepare) {
+          delete scripts.prepare;
+          console.info(`🔧 Removed prepare script for monorepo mode`);
+        }
+      }
     }
 
     // 檢查 .husky 是否在移除清單中
