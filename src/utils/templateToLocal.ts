@@ -3,6 +3,17 @@ import { join } from 'path';
 import { execSync } from 'child_process';
 import { ParsedTemplateType } from '@/types';
 
+const vcsMetaPaths = ['.git', '.hg', '.svn'];
+
+function removeVcsMetadata(targetDir: string) {
+  for (const metaPath of vcsMetaPaths) {
+    const fullPath = join(targetDir, metaPath);
+    if (existsSync(fullPath)) {
+      rmSync(fullPath, { recursive: true, force: true });
+    }
+  }
+}
+
 export function templateToLocal(parsed: ParsedTemplateType, targetDir: string) {
   if (parsed.isLocal) {
     // ==== Local Path ====
@@ -14,6 +25,7 @@ export function templateToLocal(parsed: ParsedTemplateType, targetDir: string) {
     }
     mkdirSync(targetDir, { recursive: true });
     cpSync(fromDir, targetDir, { recursive: true });
+    removeVcsMetadata(targetDir);
     return;
   }
 
@@ -41,7 +53,6 @@ export function templateToLocal(parsed: ParsedTemplateType, targetDir: string) {
   // Clean up temporary directory
   rmSync(tmpDir, { recursive: true, force: true });
 
-  // Remove .git folder from the target
-  const gitDir = join(targetDir, '.git');
-  if (existsSync(gitDir)) rmSync(gitDir, { recursive: true, force: true });
+  // Remove VCS metadata folders from the target
+  removeVcsMetadata(targetDir);
 }
