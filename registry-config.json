@@ -1,8 +1,13 @@
 {
     "registries": [
         {
-            "name": "start-ts-templates",
-            "url": "https://raw.githubusercontent.com/royfw/start-ts-templates/main/registry.json",
+            "name": "rfjs/templates",
+            "url": "https://raw.githubusercontent.com/royfw/rfjs/main/templates/registry.json",
+            "enabled": true
+        },
+        {
+            "name": "rfjs/templates/monorepo",
+            "url": "https://raw.githubusercontent.com/royfw/rfjs/main/templates/monorepo/registry.json",
             "enabled": true
         }
     ],
