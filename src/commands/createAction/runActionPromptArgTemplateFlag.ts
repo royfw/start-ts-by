@@ -17,9 +17,9 @@ export async function runActionPromptArgTemplateFlag(arg?: string) {
 
       // 第一層：選擇來源
       const sourceChoices = [
-        ...sources.map((source) => ({
+        ...sources.map((source, index) => ({
           name: `${source.name} (${source.templates.length} templates)`,
-          value: source.type,
+          value: String(index),
           short: source.name,
         })),
         {
@@ -71,7 +71,8 @@ export async function runActionPromptArgTemplateFlag(arg?: string) {
       }
 
       // 第二層：從選定來源選擇具體 template
-      const selectedSource = sources.find((s) => s.type === sourceResponse.source);
+      const selectedSource = sources[Number(sourceResponse.source)];
+
       if (!selectedSource || selectedSource.templates.length === 0) {
         console.error('❌ No templates available');
         process.exit(1);
