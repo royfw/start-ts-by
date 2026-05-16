@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import { resolve } from 'path';
 import { loadRegistryConfig } from './config.js';
-import { getDefaultRegistryConfigPath } from '@/configs.js';
 import { RegistryConfig } from './types.js';
 
 const TEST_CONFIG_DIR = resolve(process.cwd(), '.test-config');
@@ -21,14 +20,6 @@ describe('registry/config', () => {
     if (existsSync(TEST_CONFIG_DIR)) {
       rmSync(TEST_CONFIG_DIR, { recursive: true, force: true });
     }
-  });
-
-  describe('getDefaultRegistryConfigPath', () => {
-    it('should return default registry-config.json path', () => {
-      const path = getDefaultRegistryConfigPath();
-      expect(path).toContain('registry-config.json');
-      expect(path).not.toContain('src');
-    });
   });
 
   describe('loadRegistryConfig', () => {

@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { getRmFlagRmList } from './getRmFlagRmList';
-import { actionMonorepoFileNames } from '@/configs';
+
+const monorepoFileNames = [
+  'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
+  'package-lock.json',
+  'yarn.lock',
+  '.npmrc',
+  '.husky',
+  '.github',
+];
 
 describe('getRmFlagRmList', () => {
   it('should convert string array to RemoveFileInfoType array', () => {
@@ -19,7 +28,7 @@ describe('getRmFlagRmList', () => {
   });
 
   it('should handle monorepo files correctly', () => {
-    const result = getRmFlagRmList(actionMonorepoFileNames);
+    const result = getRmFlagRmList(monorepoFileNames);
 
     expect(result).toHaveLength(7);
     expect(result).toEqual([

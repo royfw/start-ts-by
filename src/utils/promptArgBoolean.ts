@@ -9,6 +9,5 @@ export async function promptArgBoolean(
   const res: OptionsType = await inquirer.prompt([
     { type: 'confirm', name: key, message, default: defaultValue },
   ]);
-  const value = res[`${key}`] !== undefined ? Boolean(res[`${key}`]) : defaultValue;
-  return value;
+  return res[key] ?? defaultValue;
 }

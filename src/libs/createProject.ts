@@ -9,7 +9,7 @@ import {
 } from '@/utils';
 import { execSyncByList } from '@/utils/execSyncByList';
 
-export async function createProject(params: CreateProjectParams) {
+export function createProject(params: CreateProjectParams) {
   const { name, template, removeList, execList, isMonorepo } = params;
 
   const targetDir = getTargetDir(name);
@@ -31,7 +31,5 @@ export async function createProject(params: CreateProjectParams) {
   execSyncByList(runExecCommandList, { cwd: targetDir });
 
   console.log(`✅ Project "${name}" has been created at ${targetDir}`);
-
-  await new Promise((resolve) => setTimeout(resolve, 500));
   console.log('🎉 Start building your project!');
 }

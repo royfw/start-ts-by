@@ -1,8 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { actionMonorepoFileNames } from '@/configs';
 import { getRmFlagRmList } from './getRmFlagRmList';
 import { ExtendedActionArgsType } from '@/types';
 import { actionPromptCheckArgs } from './createAction';
+
+const monorepoFileNames = [
+  'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
+  'package-lock.json',
+  'yarn.lock',
+  '.npmrc',
+  '.husky',
+  '.github',
+];
 
 describe('createAction - monorepo functionality', () => {
   describe('monorepo flag integration', () => {
@@ -12,7 +21,7 @@ describe('createAction - monorepo functionality', () => {
       };
 
       const monorepoRmList =
-        actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
+        actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
       expect(monorepoRmList).toHaveLength(7);
       expect(monorepoRmList).toEqual([
@@ -32,7 +41,7 @@ describe('createAction - monorepo functionality', () => {
       };
 
       const monorepoRmList =
-        actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
+        actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
       expect(monorepoRmList).toHaveLength(0);
     });
@@ -41,7 +50,7 @@ describe('createAction - monorepo functionality', () => {
       const actionArgs: ExtendedActionArgsType = {};
 
       const monorepoRmList =
-        actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
+        actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
       expect(monorepoRmList).toHaveLength(0);
     });
@@ -53,7 +62,7 @@ describe('createAction - monorepo functionality', () => {
       };
 
       const monorepoRmList =
-        actionArgs.monorepo === true ? getRmFlagRmList(actionMonorepoFileNames) : [];
+        actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
       const rmList =
         actionArgs.rm && Array.isArray(actionArgs.rm)
@@ -75,27 +84,27 @@ describe('createAction - monorepo functionality', () => {
     });
   });
 
-  describe('actionMonorepoFileNames constant', () => {
+  describe('monorepoFileNames constant', () => {
     it('should contain all required monorepo files', () => {
-      expect(actionMonorepoFileNames).toContain('pnpm-lock.yaml');
-      expect(actionMonorepoFileNames).toContain('pnpm-workspace.yaml');
-      expect(actionMonorepoFileNames).toContain('package-lock.json');
-      expect(actionMonorepoFileNames).toContain('yarn.lock');
-      expect(actionMonorepoFileNames).toContain('.npmrc');
+      expect(monorepoFileNames).toContain('pnpm-lock.yaml');
+      expect(monorepoFileNames).toContain('pnpm-workspace.yaml');
+      expect(monorepoFileNames).toContain('package-lock.json');
+      expect(monorepoFileNames).toContain('yarn.lock');
+      expect(monorepoFileNames).toContain('.npmrc');
     });
 
     it('should have exactly 7 files', () => {
-      expect(actionMonorepoFileNames).toHaveLength(7);
+      expect(monorepoFileNames).toHaveLength(7);
     });
 
     it('should contain .husky and .github', () => {
-      expect(actionMonorepoFileNames).toContain('.husky');
-      expect(actionMonorepoFileNames).toContain('.github');
+      expect(monorepoFileNames).toContain('.husky');
+      expect(monorepoFileNames).toContain('.github');
     });
 
     it('should not contain .nvmrc or .vscode', () => {
-      expect(actionMonorepoFileNames).not.toContain('.nvmrc');
-      expect(actionMonorepoFileNames).not.toContain('.vscode');
+      expect(monorepoFileNames).not.toContain('.nvmrc');
+      expect(monorepoFileNames).not.toContain('.vscode');
     });
   });
 

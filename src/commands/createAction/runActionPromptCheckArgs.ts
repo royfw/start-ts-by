@@ -12,6 +12,6 @@ export async function runActionPromptCheckArgs(
     if (value === undefined) continue;
     if (typeof value !== 'boolean') continue;
     const promptValue = await promptArgBoolean(key, message, value);
-    actionArgsParams[key] = promptValue;
+    actionArgsParams[key] = promptValue as string | boolean | string[] | undefined;
   }
 }
