@@ -4,7 +4,7 @@ import {
   VarsMergeResult,
   ExtendedActionArgsType,
 } from '@/types';
-import { parseVars } from './varsParser';
+import { parseVars, hasNestedKey, getNestedValue } from './varsParser';
 
 /**
  * 深度合併多個變數物件，處理優先序與 strict 規則
@@ -43,7 +43,7 @@ function deepMerge(
   source: ParsedVarsType,
   strict: boolean,
 ): VarsMergeResult {
-  const merged = JSON.parse(JSON.stringify(target)) as ParsedVarsType; // 深拷貝
+  const merged = structuredClone(target);
   const warnings: string[] = [];
   const errors: string[] = [];
 
@@ -267,7 +267,7 @@ export function validateRequiredVars(
   const missing: string[] = [];
 
   for (const key of required) {
-    if (!hasDeepKey(vars, key) || getDeepValue(vars, key) == null) {
+    if (!hasNestedKey(vars, key) || getNestedValue(vars, key) == null) {
       missing.push(key);
     }
   }
@@ -276,39 +276,4 @@ export function validateRequiredVars(
     isValid: missing.length === 0,
     missing,
   };
-}
-
-/**
- * 檢查深層鍵是否存在
- */
-function hasDeepKey(obj: ParsedVarsType, key: string): boolean {
-  try {
-    getDeepValue(obj, key);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * 取得深層值
- */
-function getDeepValue(obj: ParsedVarsType, key: string): ParsedVarsType[string] {
-  const keys = key.split('.');
-  let current: ParsedVarsType[string] = obj;
-
-  for (const k of keys) {
-    if (
-      current &&
-      typeof current === 'object' &&
-      !Array.isArray(current) &&
-      k in current
-    ) {
-      current = current[k];
-    } else {
-      throw new Error(`Key not found: ${key}`);
-    }
-  }
-
-  return current;
 }

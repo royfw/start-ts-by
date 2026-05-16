@@ -105,7 +105,7 @@ function convertValue(value: string): string | number | boolean {
 /**
  * 檢查是否已存在巢狀鍵
  */
-function hasNestedKey(obj: ParsedVarsType, key: string): boolean {
+export function hasNestedKey(obj: ParsedVarsType, key: string): boolean {
   try {
     getNestedValue(obj, key);
     return true;
@@ -117,7 +117,7 @@ function hasNestedKey(obj: ParsedVarsType, key: string): boolean {
 /**
  * 取得巢狀值
  */
-function getNestedValue(obj: ParsedVarsType, key: string): ParsedVarsType[string] {
+export function getNestedValue(obj: ParsedVarsType, key: string): ParsedVarsType[string] {
   const keys = parseKeyPath(key);
   let current: ParsedVarsType[string] = obj;
 

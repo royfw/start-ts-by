@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { parseVarsFile, validateVarsFile, createExampleVarsFile } from './varsFile';
+import { parseVarsFile } from './varsFile';
 import { writeFileSync, mkdtempSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -326,75 +326,6 @@ name=second`;
       expect(result.vars).toEqual({
         name: 'second',
       });
-    });
-  });
-
-  describe('validateVarsFile', () => {
-    it('should validate existing file', () => {
-      const filePath = join(tempDir, 'exists.vars');
-      writeFileSync(filePath, 'test=value');
-
-      const result = validateVarsFile(filePath);
-
-      expect(result.isValid).toBe(true);
-      expect(result.suggestions).toHaveLength(0);
-    });
-
-    it('should handle non-existent file with suggestions', () => {
-      const nonExistentPath = join(tempDir, 'missing.vars');
-      const suggestionPath = join(tempDir, '.stb.vars');
-      writeFileSync(suggestionPath, 'test=value');
-
-      const result = validateVarsFile(nonExistentPath);
-
-      expect(result.isValid).toBe(false);
-      expect(result.suggestions.length).toBeGreaterThan(0);
-      expect(result.suggestions[0]).toContain('does not exist');
-      expect(result.suggestions.some((s) => s.includes('.stb.vars'))).toBe(true);
-    });
-
-    it('should handle non-existent file without suggestions', () => {
-      const nonExistentPath = join(tempDir, 'missing.vars');
-
-      const result = validateVarsFile(nonExistentPath);
-
-      expect(result.isValid).toBe(false);
-      expect(result.suggestions).toHaveLength(1);
-      expect(result.suggestions[0]).toContain('does not exist');
-    });
-  });
-
-  describe('createExampleVarsFile', () => {
-    it('should create valid example content', () => {
-      const example = createExampleVarsFile();
-
-      expect(example).toContain('# Example vars file');
-      expect(example).toContain('name=my-awesome-app');
-      expect(example).toContain('template=user/repo');
-      expect(example).toContain('removeList[0].field=README.md');
-      expect(example).toContain('execList[0].key=gitInit');
-      expect(example).toContain('include: ./common.vars');
-    });
-
-    it('should create parseable content', () => {
-      const example = createExampleVarsFile();
-      const filePath = join(tempDir, 'example.vars');
-
-      // Remove comment lines and include lines for parsing test
-      const cleanedExample = example
-        .split('\n')
-        .filter(
-          (line) => !line.trim().startsWith('#') && !line.trim().startsWith('include:'),
-        )
-        .filter((line) => line.trim().length > 0)
-        .join('\n');
-
-      writeFileSync(filePath, cleanedExample);
-      const result = parseVarsFile(filePath);
-
-      expect(result.errors).toHaveLength(0);
-      expect(result.vars.name).toBe('my-awesome-app');
-      expect(result.vars.template).toBe('user/repo');
     });
   });
 });

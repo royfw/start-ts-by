@@ -10,9 +10,7 @@ export function parseTemplateSource(input: string): ParsedTemplateType {
   let isLocal = false;
 
   // 拆分 #
-  const [repoPart, refPartRaw = ''] = input.split('#', 2);
-  let refPart = refPartRaw;
-  refPart = refPart || '';
+  const [repoPart, refPart = ''] = input.split('#', 2);
 
   // 支援本地路徑判斷
   const isFilePrefix = repoPart.startsWith('file:');
