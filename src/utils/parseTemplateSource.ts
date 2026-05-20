@@ -28,12 +28,7 @@ export function parseTemplateSource(input: string): ParsedTemplateType {
     repoUrl = isFilePrefix ? repoPart.replace(/^file:/, '') : repoPart;
     // 統一轉成絕對路徑，避免相對難抓
     repoUrl = resolve(repoUrl);
-    // 若 local path 也支援 /subdir
-    const subdirIdx = repoUrl.match(/(.+?)(\/[\w./_-]+)$/);
-    if (!refPart && subdirIdx) {
-      repoUrl = subdirIdx[1];
-      subdir = subdirIdx[2].replace(/^\//, '');
-    }
+    // 若 local path 也支援 subdir — 不拆分，由 caller 自行指定
     if (refPart) {
       // 一般 local path 不需要 branch，但還是容錯支援
       const idx = refPart.indexOf('/');
