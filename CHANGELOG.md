@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- fd30435: ### Features
+
+  - **GitLab CI/CD and deploy config control**: Added `--gitlab` and `--deploy` flags with interactive prompts. When `--gitlab` is not set, all files and directories containing "gitlab" (case-insensitive) are removed recursively. When `--deploy` is not set, `deploy/` and `.deploy/` directories are removed.
+
+### Patch Changes
+
+- 6affd3d: ### Bug Fixes
+
+  - **Local git template copy**: Only copy git-tracked files when copying from a local git repository template. Previously, using a local git repo as a template would copy all files including `node_modules/`, `dist/`, `.env` and other `.gitignore`'d files. Now it uses `git ls-files` to match `git clone` behavior.
+  - **parseTemplateSource**: Fixed incorrect path splitting for absolute paths like `/home/user/project` which were wrongly parsed as `repoUrl="/home"` + `subdir="user/project"`.
+
+- fc5b1cb: ### Internal
+
+  - Code cleanup and refactoring: removed dead code, simplified internal modules, improved code organization
+
 ## 0.4.3
 
 ### Patch Changes
