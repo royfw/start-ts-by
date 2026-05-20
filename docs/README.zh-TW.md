@@ -275,6 +275,8 @@ Options:
   --rm <files...>                   建立專案後要移除的檔案/資料夾
   --no-husky                        移除 .husky
   --github                          保留 .github/workflows
+  --gitlab                          保留 .gitlab-ci.yml 和 GitLab CI/CD 設定
+  --deploy                          保留 deploy/.deploy 設定
   --git-init                        建立後執行 git init
   --npm-install                     建立後執行 npm install
   --monorepo                        移除 monorepo 衝突檔案（lock 檔案、workspace 設定、.npmrc、.husky、.github、prepare script、packageManager 欄位）

@@ -65,6 +65,7 @@ export type CreateProjectParams = {
   name: string;
   template: string;
   removeList: RemoveFileInfoType[];
+  removePatterns?: RegExp[];
   execList: RnuExecInfoType[];
   isMonorepo?: boolean;
 };

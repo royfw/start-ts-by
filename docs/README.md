@@ -278,6 +278,8 @@ Options:
   --rm <files...>                   Remove files/folders after project creation
   --no-husky                        Remove .husky
   --github                          Keep .github/workflows
+  --gitlab                          Keep .gitlab-ci.yml and GitLab CI/CD config
+  --deploy                          Keep deploy/.deploy configuration
   --git-init                        Run git init after creation
   --npm-install                     Run npm install after creation
   --monorepo                        Remove monorepo conflicting files (lock files, workspace config, .npmrc, .husky, .github, prepare script, packageManager field)

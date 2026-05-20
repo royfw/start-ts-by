@@ -28,6 +28,9 @@ const monorepoFileNames = [
   '.github',
 ];
 
+const gitlabFileNames = ['.gitlab-ci.yml', '.gitlab'];
+const deployFileNames = ['deploy', '.deploy'];
+
 const rmDotKeys = ['husky', 'github'];
 
 const execCommands: { key: string; command: string }[] = [
@@ -146,6 +149,9 @@ function runNonInteractiveMode(
   // 構建 removeList
   const removeList = buildRemoveList(actionArgs, mergedVars);
 
+  // 構建 removePatterns (gitlab 排除時，移除所有含 gitlab 字眼的檔案)
+  const removePatterns = actionArgs.gitlab === false ? [/gitlab/i] : undefined;
+
   // 構建 execList
   const execList = buildExecList(actionArgs, mergedVars);
 
@@ -153,6 +159,7 @@ function runNonInteractiveMode(
     name: projectName,
     template: template,
     removeList,
+    removePatterns,
     execList,
     isMonorepo: actionArgs.monorepo === true,
   };
@@ -185,22 +192,36 @@ async function runInteractiveMode(
   const monorepoRmList =
     actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
+  // 處理 --gitlab flag (false = remove gitlab config)
+  const gitlabRmList =
+    actionArgs.gitlab === false ? getRmFlagRmList(gitlabFileNames) : [];
+
+  // 處理 --deploy flag (false = remove deploy config)
+  const deployRmList =
+    actionArgs.deploy === false ? getRmFlagRmList(deployFileNames) : [];
+
   const promptRmFlagRmList = await runActionPromptArgRmFlag(actionArgs);
   const promptInputsRmList = await runActionPromptWhileInputsAddRmList(
     'Enter files/folders to remove (press double enter to skip):',
   );
   const finalRemoveList = paramArgsRmList
     .concat(monorepoRmList)
+    .concat(gitlabRmList)
+    .concat(deployRmList)
     .concat(promptRmFlagRmList)
     .concat(promptInputsRmList);
 
   // execList
   const finalExecList = getExecList(actionArgs, actionExecList);
 
+  // 移除所有含 gitlab 字眼的檔案/資料夾
+  const removePatterns = actionArgs.gitlab === false ? [/gitlab/i] : undefined;
+
   const params: CreateProjectParams = {
     name: projectName,
     template,
     removeList: finalRemoveList,
+    removePatterns,
     execList: finalExecList,
     isMonorepo: actionArgs.monorepo === true,
   };
@@ -219,6 +240,14 @@ function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedV
   const monorepoRmList =
     actionArgs.monorepo === true ? getRmFlagRmList(monorepoFileNames) : [];
 
+  // 處理 --gitlab flag (false = remove gitlab config)
+  const gitlabRmList =
+    actionArgs.gitlab === false ? getRmFlagRmList(gitlabFileNames) : [];
+
+  // 處理 --deploy flag (false = remove deploy config)
+  const deployRmList =
+    actionArgs.deploy === false ? getRmFlagRmList(deployFileNames) : [];
+
   // 從 mergedVars 獲取額外的 removeList
   let varsRemoveList: Array<{ field: string; isRemove: boolean }> = [];
   if (mergedVars.removeList && Array.isArray(mergedVars.removeList)) {
@@ -230,7 +259,11 @@ function buildRemoveList(actionArgs: ExtendedActionArgsType, mergedVars: ParsedV
     }));
   }
 
-  return paramArgsRmList.concat(monorepoRmList).concat(varsRemoveList);
+  return paramArgsRmList
+    .concat(monorepoRmList)
+    .concat(gitlabRmList)
+    .concat(deployRmList)
+    .concat(varsRemoveList);
 }
 
 /**
@@ -264,6 +297,8 @@ const actionExecList: RnuExecInfoType[] = execCommands.map(({ key, command }) =>
 export const actionPromptCheckArgs: PromptCheckArgsType[] = [
   { key: 'husky', message: 'Keep husky?' },
   { key: 'github', message: 'Keep GitHub Actions?' },
+  { key: 'gitlab', message: 'Keep GitLab CI/CD?' },
+  { key: 'deploy', message: 'Keep deploy config?' },
   {
     key: 'monorepo',
     message:
@@ -326,6 +361,16 @@ export const createActionCommand: ActionCommandType = {
     {
       flags: '--github',
       description: 'Keep .github/workflows',
+      defaultValue: false,
+    },
+    {
+      flags: '--gitlab',
+      description: 'Keep .gitlab-ci.yml and GitLab CI/CD config',
+      defaultValue: false,
+    },
+    {
+      flags: '--deploy',
+      description: 'Keep deploy/.deploy configuration',
       defaultValue: false,
     },
     {
