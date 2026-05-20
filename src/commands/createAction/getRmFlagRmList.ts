@@ -1,11 +1,5 @@
 import { RemoveFileInfoType } from '@/types';
 
-export function getRmFlagRmList(rmList: string[]) {
-  const removeList: RemoveFileInfoType[] = rmList.map((item) => {
-    return {
-      field: item,
-      isRemove: true,
-    };
-  });
-  return removeList;
+export function getRmFlagRmList(rmList: string[]): RemoveFileInfoType[] {
+  return rmList.map((field) => ({ field, isRemove: true }));
 }

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { execSync } from 'child_process';
 import { afterEach, describe, expect, it } from 'vitest';
 import { templateToLocal } from './templateToLocal';
 
@@ -23,9 +24,14 @@ describe('templateToLocal', () => {
     const sourceDir = createTempDir('template-source-');
     const targetDir = createTempDir('template-target-');
 
-    fs.mkdirSync(path.join(sourceDir, '.git'), { recursive: true });
-    fs.writeFileSync(path.join(sourceDir, '.git', 'HEAD'), 'ref: refs/heads/main\n');
     fs.writeFileSync(path.join(sourceDir, 'README.md'), '# template\n');
+    fs.writeFileSync(path.join(sourceDir, '.env'), 'SECRET=123\n');
+
+    execSync('git init', { cwd: sourceDir });
+    execSync("git config user.email 'test@test.com'", { cwd: sourceDir });
+    execSync("git config user.name 'Test'", { cwd: sourceDir });
+    execSync('git add README.md', { cwd: sourceDir });
+    execSync('git commit -m "init"', { cwd: sourceDir });
 
     templateToLocal(
       {
@@ -42,6 +48,8 @@ describe('templateToLocal', () => {
     expect(fs.readFileSync(path.join(targetDir, 'README.md'), 'utf-8')).toContain(
       'template',
     );
+    // .env is not git-tracked, so it should not be copied
+    expect(fs.existsSync(path.join(targetDir, '.env'))).toBe(false);
   });
 
   it('should remove common VCS metadata folders when copying from local template', () => {

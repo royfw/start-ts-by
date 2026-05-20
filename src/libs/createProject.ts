@@ -1,3 +1,5 @@
+import { readdirSync, rmSync } from 'fs';
+import { join } from 'path';
 import { CreateProjectParams } from '@/types';
 import {
   checkExistPathAndRemove,
@@ -9,8 +11,31 @@ import {
 } from '@/utils';
 import { execSyncByList } from '@/utils/execSyncByList';
 
-export async function createProject(params: CreateProjectParams) {
-  const { name, template, removeList, execList, isMonorepo } = params;
+function scanAndRemoveByPattern(
+  targetDir: string,
+  pattern: RegExp,
+  dir: string,
+  relPrefix: string,
+) {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const relPath = relPrefix ? join(relPrefix, entry.name) : entry.name;
+    const fullPath = join(dir, entry.name);
+    if (pattern.test(relPath) || pattern.test(entry.name)) {
+      rmSync(fullPath, { recursive: true, force: true });
+      console.info(`🗑️  ${relPath} removed`);
+    } else if (entry.isDirectory()) {
+      scanAndRemoveByPattern(targetDir, pattern, fullPath, relPath);
+    }
+  }
+}
+
+function removeByPattern(targetDir: string, pattern: RegExp) {
+  scanAndRemoveByPattern(targetDir, pattern, targetDir, '');
+}
+
+export function createProject(params: CreateProjectParams) {
+  const { name, template, removeList, removePatterns, execList, isMonorepo } = params;
 
   const targetDir = getTargetDir(name);
 
@@ -19,6 +44,13 @@ export async function createProject(params: CreateProjectParams) {
 
   for (const item of removeList) {
     checkExistPathAndRemove(targetDir, item.field, item.isRemove);
+  }
+
+  // Remove files matching patterns (e.g. gitlab-related files)
+  if (removePatterns) {
+    for (const pattern of removePatterns) {
+      removeByPattern(targetDir, pattern);
+    }
   }
 
   // Initialize package.json
@@ -31,7 +63,5 @@ export async function createProject(params: CreateProjectParams) {
   execSyncByList(runExecCommandList, { cwd: targetDir });
 
   console.log(`✅ Project "${name}" has been created at ${targetDir}`);
-
-  await new Promise((resolve) => setTimeout(resolve, 500));
   console.log('🎉 Start building your project!');
 }

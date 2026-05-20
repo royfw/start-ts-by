@@ -1,5 +1,5 @@
-import { cpSync, existsSync, rmSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { cpSync, existsSync, mkdirSync, rmSync, statSync } from 'fs';
+import { join, relative } from 'path';
 import { execSync } from 'child_process';
 import { ParsedTemplateType } from '@/types';
 
@@ -14,17 +14,48 @@ function removeVcsMetadata(targetDir: string) {
   }
 }
 
+function isGitRepo(dir: string): boolean {
+  return existsSync(join(dir, '.git'));
+}
+
+function copyGitTrackedFiles(srcDir: string, targetDir: string, subdir: string) {
+  const tracked = execSync('git ls-files', { cwd: srcDir }).toString().trim();
+  if (!tracked) return;
+
+  const files = tracked.split(/\r?\n/);
+
+  for (const file of files) {
+    const srcFile = join(srcDir, file);
+    const relPath = relative(subdir, file);
+    if (relPath.startsWith('..')) continue;
+    const destFile = join(targetDir, relPath);
+    if (statSync(srcFile, { throwIfNoEntry: false })?.isFile()) {
+      mkdirSync(join(destFile, '..'), { recursive: true });
+      cpSync(srcFile, destFile);
+    }
+  }
+}
+
 export function templateToLocal(parsed: ParsedTemplateType, targetDir: string) {
   if (parsed.isLocal) {
     // ==== Local Path ====
-    let fromDir = parsed.repoUrl;
+    const baseDir = parsed.repoUrl;
+    let fromDir = baseDir;
     if (parsed.subdir) {
-      fromDir = join(parsed.repoUrl, parsed.subdir);
+      fromDir = join(baseDir, parsed.subdir);
       if (!existsSync(fromDir))
         throw new Error(`Local subdirectory does not exist: ${fromDir}`);
     }
+
     mkdirSync(targetDir, { recursive: true });
-    cpSync(fromDir, targetDir, { recursive: true });
+
+    // If the source is a git repo, only copy tracked files (same as git clone)
+    if (isGitRepo(baseDir)) {
+      copyGitTrackedFiles(baseDir, targetDir, parsed.subdir || '.');
+    } else {
+      cpSync(fromDir, targetDir, { recursive: true });
+    }
+
     removeVcsMetadata(targetDir);
     return;
   }

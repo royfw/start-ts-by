@@ -1,17 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs/promises';
-import http from 'node:http';
-import https from 'node:https';
 import { loadRegistryFromUrl, loadRegistryFromFile } from './loader.js';
 
 // Mock modules
 vi.mock('node:fs/promises');
-vi.mock('node:http');
-vi.mock('node:https');
 
 describe('loader', () => {
   describe('loadRegistryFromFile', () => {
@@ -150,34 +144,13 @@ describe('loader', () => {
     });
 
     it('should successfully load HTTPS URL', async () => {
-      const mockRequest = {
-        on: vi.fn((event, _callback) => {
-          if (event === 'error') {
-            // do nothing
-          }
-          return mockRequest;
-        }),
-        setTimeout: vi.fn(),
-      };
-
       const mockResponse = {
-        statusCode: 200,
-        on: vi.fn((event, callback) => {
-          if (event === 'data') {
-            callback(validRegistryContent);
-          } else if (event === 'end') {
-            callback();
-          }
-          return mockResponse;
-        }),
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(validRegistryContent),
       };
 
-      vi.mocked(https.get).mockImplementation(((url: any, _callback: any) => {
-        if (typeof _callback === 'function') {
-          _callback(mockResponse as any);
-        }
-        return mockRequest as any;
-      }) as any);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockResponse as any);
 
       const result = await loadRegistryFromUrl('https://example.com/registry.json');
 
@@ -195,34 +168,13 @@ describe('loader', () => {
     });
 
     it('should successfully load HTTP URL', async () => {
-      const mockRequest = {
-        on: vi.fn((event, _callback) => {
-          if (event === 'error') {
-            // do nothing
-          }
-          return mockRequest;
-        }),
-        setTimeout: vi.fn(),
-      };
-
       const mockResponse = {
-        statusCode: 200,
-        on: vi.fn((event, callback) => {
-          if (event === 'data') {
-            callback(validRegistryContent);
-          } else if (event === 'end') {
-            callback();
-          }
-          return mockResponse;
-        }),
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(validRegistryContent),
       };
 
-      vi.mocked(http.get).mockImplementation(((url: any, _callback: any) => {
-        if (typeof _callback === 'function') {
-          _callback(mockResponse as any);
-        }
-        return mockRequest as any;
-      }) as any);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockResponse as any);
 
       const result = await loadRegistryFromUrl('http://example.com/registry.json');
 
@@ -240,27 +192,13 @@ describe('loader', () => {
     });
 
     it('should handle HTTP error status code', async () => {
-      const mockRequest = {
-        on: vi.fn((event, _callback) => {
-          if (event === 'error') {
-            // do nothing
-          }
-          return mockRequest;
-        }),
-        setTimeout: vi.fn(),
-      };
-
       const mockResponse = {
-        statusCode: 404,
-        on: vi.fn(),
+        ok: false,
+        status: 404,
+        text: () => Promise.resolve('Not Found'),
       };
 
-      vi.mocked(https.get).mockImplementation(((url: any, _callback: any) => {
-        if (typeof _callback === 'function') {
-          _callback(mockResponse as any);
-        }
-        return mockRequest as any;
-      }) as any);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockResponse as any);
 
       await expect(
         loadRegistryFromUrl('https://example.com/registry.json'),
@@ -268,54 +206,21 @@ describe('loader', () => {
     });
 
     it('should handle network error', async () => {
-      const mockRequest = {
-        on: vi.fn((event, callback) => {
-          if (event === 'error') {
-            callback(new Error('Network error'));
-          }
-          return mockRequest;
-        }),
-        setTimeout: vi.fn(),
-      };
-
-      vi.mocked(https.get).mockImplementation(() => {
-        return mockRequest as any;
-      });
+      vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Network error'));
 
       await expect(
         loadRegistryFromUrl('https://example.com/registry.json'),
-      ).rejects.toThrow('Network request failed: Network error');
+      ).rejects.toThrow('Network error');
     });
 
     it('should handle JSON parsing error', async () => {
-      const mockRequest = {
-        on: vi.fn((event, _callback) => {
-          if (event === 'error') {
-            // do nothing
-          }
-          return mockRequest;
-        }),
-        setTimeout: vi.fn(),
-      };
-
       const mockResponse = {
-        statusCode: 200,
-        on: vi.fn((event, callback) => {
-          if (event === 'data') {
-            callback('invalid json');
-          } else if (event === 'end') {
-            callback();
-          }
-          return mockResponse;
-        }),
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve('invalid json'),
       };
 
-      vi.mocked(https.get).mockImplementation(((url: any, _callback: any) => {
-        if (typeof _callback === 'function') {
-          _callback(mockResponse as any);
-        }
-        return mockRequest as any;
-      }) as any);
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockResponse as any);
 
       await expect(
         loadRegistryFromUrl('https://example.com/registry.json'),

@@ -89,9 +89,7 @@ function parseVarsFileRecursive(
 
       // 解析相對路徑
       const fullIncludePath = resolve(dirname(resolvedPath), includePath);
-      const includeResult = parseVarsFileRecursive(fullIncludePath, strict, [
-        ...includeStack,
-      ]);
+      const includeResult = parseVarsFileRecursive(fullIncludePath, strict, includeStack);
 
       // 合併結果
       Object.assign(vars, includeResult.vars);
@@ -143,69 +141,4 @@ function parseVarsFileRecursive(
   }
 
   return { vars, errors };
-}
-
-/**
- * 驗證 vars-file 路徑並提供修正建議
- */
-export function validateVarsFile(filePath: string): {
-  isValid: boolean;
-  suggestions: string[];
-} {
-  const suggestions: string[] = [];
-
-  if (!existsSync(filePath)) {
-    suggestions.push(`File "${filePath}" does not exist`);
-
-    // 提供可能的修正建議
-    const commonNames = ['.stb.vars', 'vars.txt', 'variables.env', '.env.vars'];
-    const dir = dirname(filePath);
-
-    for (const name of commonNames) {
-      const suggestedPath = resolve(dir, name);
-      if (existsSync(suggestedPath)) {
-        suggestions.push(`Did you mean "${suggestedPath}"?`);
-      }
-    }
-
-    return { isValid: false, suggestions };
-  }
-
-  return { isValid: true, suggestions: [] };
-}
-
-/**
- * 創建範例 vars-file 內容
- */
-export function createExampleVarsFile(): string {
-  return `# Example vars file for start-ts-by
-# Comments start with #
-# Empty lines are ignored
-
-# Basic variables
-name=my-awesome-app
-template=user/repo
-
-# Nested variables
-removeList[0].field=README.md
-removeList[0].isRemove=true
-removeList[1].field=.github
-removeList[1].isRemove=false
-
-# Execution options
-execList[0].key=gitInit
-execList[0].command=git init
-execList[0].isExec=true
-
-# Check arguments
-checkArgs[0].key=husky
-checkArgs[0].message=Keep husky?
-
-# File content (@ prefix reads from file)
-# token=@./secret-token.txt
-
-# Include other vars files
-# include: ./common.vars
-# include: ./environment-specific.vars
-`;
 }

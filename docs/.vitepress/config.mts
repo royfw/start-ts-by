@@ -5,6 +5,7 @@ export default defineConfig({
   title: 'start-ts-by',
   description: 'Scaffold TypeScript projects with templates.',
   base: process.env.VITEPRESS_BASE || '/',
+  ignoreDeadLinks: [/\.ts:\d+$/],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
