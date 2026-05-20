@@ -10,7 +10,7 @@ export type {
 } from './types.js';
 
 // Validator functions
-export { validateRegistry, isValidRegistry } from './validator.js';
+export { validateRegistry } from './validator.js';
 
 // Loader functions
-export { loadRegistryFromUrl, loadRegistryFromFile } from './loader.js';
+export { loadRegistryFromUrl, loadRegistryFromFile, loadRegistry } from './loader.js';

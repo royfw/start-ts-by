@@ -16,7 +16,7 @@ export async function runActionPromptArgRmFlag(actionArgsParams: ActionArgsType)
       `Confirm to remove file or folder: ${field}?`,
       isRemove,
     );
-    item.isRemove = promptValue;
+    item.isRemove = Boolean(promptValue);
   }
   return exRmInfoList;
 }

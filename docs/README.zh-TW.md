@@ -235,6 +235,7 @@ npx start-ts-by --list-verbose
 
 - **已移除 degit 相依，全部改用 git 指令。**
 - 會根據解析後的模板來源，用 git clone 或直接複製資料夾。
+- 當本地模板來源為 git 倉庫時，只會複製 git tracked 的檔案（與 `git clone` 行為一致），不會複製 `node_modules/`、`dist/`、`.env` 等被 `.gitignore` 忽略的檔案。
 - 所有 git repo 均可指定 branch/tag 及子目錄。
 - 相容 GitHub、GitLab、自架、私有 git、SSH/HTTP、本地路徑。
 
@@ -274,6 +275,8 @@ Options:
   --rm <files...>                   建立專案後要移除的檔案/資料夾
   --no-husky                        移除 .husky
   --github                          保留 .github/workflows
+  --gitlab                          保留 .gitlab-ci.yml 和 GitLab CI/CD 設定
+  --deploy                          保留 deploy/.deploy 設定
   --git-init                        建立後執行 git init
   --npm-install                     建立後執行 npm install
   --monorepo                        移除 monorepo 衝突檔案（lock 檔案、workspace 設定、.npmrc、.husky、.github、prepare script、packageManager 欄位）

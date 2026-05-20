@@ -30,7 +30,7 @@ export async function getAllTemplateSources(): Promise<TemplateSource[]> {
 
   for (const registrySource of enabledRegistries) {
     try {
-      const registry = await loadRegistry(registrySource.url, registryConfig);
+      const registry = await loadRegistry(registrySource.url);
 
       const registryTemplates = registry.templates.map((t: RegistryTemplate) => ({
         id: t.id,
@@ -103,7 +103,7 @@ export async function resolveTemplateValue(value: string): Promise<ResolvedTempl
       throw new Error(`Registry not found: ${registryName}`);
     }
 
-    const registry = await loadRegistry(registrySource.url, registryConfig);
+    const registry = await loadRegistry(registrySource.url);
     const template = registry.templates.find(
       (t: RegistryTemplate) => t.id === templateId,
     );
