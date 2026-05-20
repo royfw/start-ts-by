@@ -245,7 +245,7 @@ The official template collection is maintained at [royfw/start-ts-templates](htt
 
 - **Removed degit dependency.**
 - Uses native `git` commands to clone repositories based on parsed template source.
-- Local folders are copied directly.
+- Local folders are copied directly. When the source is a git repository, only git-tracked files are copied (matching `git clone` behavior), excluding `node_modules/`, `dist/`, `.env` and other `.gitignore`'d files.
 - Supports branch/tag and subdirectory selection for all git sources.
 - Works with GitHub, GitLab, private git servers, SSH/HTTP URLs, and local paths.
 

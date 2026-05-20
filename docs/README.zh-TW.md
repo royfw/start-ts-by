@@ -235,6 +235,7 @@ npx start-ts-by --list-verbose
 
 - **已移除 degit 相依，全部改用 git 指令。**
 - 會根據解析後的模板來源，用 git clone 或直接複製資料夾。
+- 當本地模板來源為 git 倉庫時，只會複製 git tracked 的檔案（與 `git clone` 行為一致），不會複製 `node_modules/`、`dist/`、`.env` 等被 `.gitignore` 忽略的檔案。
 - 所有 git repo 均可指定 branch/tag 及子目錄。
 - 相容 GitHub、GitLab、自架、私有 git、SSH/HTTP、本地路徑。
 

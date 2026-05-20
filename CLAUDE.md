@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`start-ts-by` is a CLI tool (published as an npm package) that creates TypeScript/JavaScript projects from git repository templates or local folders. It uses `commander` for CLI parsing and `inquirer` for interactive prompts. No degit dependency — all template fetching is handled by native git commands or direct file copy.
+`start-ts-by` is a CLI tool (published as an npm package) that creates TypeScript/JavaScript projects from git repository templates or local folders. It uses `commander` for CLI parsing and `inquirer` for interactive prompts. No degit dependency — all template fetching is handled by native git commands or direct file copy. When the local source is a git repository, only git-tracked files are copied (via `git ls-files`), matching `git clone` behavior.
 
 ## Prerequisites
 
@@ -66,7 +66,7 @@ src/
 │   └── createProject.ts      # Core orchestration: parse template → fetch → remove files → init package.json → run exec commands
 └── utils/
     ├── parseTemplateSource.ts # Parse "user/repo#branch/subdir" into {repoUrl, ref, subdir, isGithub, isLocal}
-    ├── templateToLocal.ts     # Clone git repo or copy local folder to target directory
+    ├── templateToLocal.ts     # Clone git repo or copy local folder to target directory (uses git ls-files for git repos)
     ├── getTargetDir.ts        # Resolve target directory for the new project
     ├── checkExistPathAndRemove.ts # Conditionally remove files/folders from the created project
     ├── initProjPackageJson.ts # Post-process package.json (rename, remove packageManager field in monorepo mode)
