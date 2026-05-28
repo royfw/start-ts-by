@@ -1,0 +1,20 @@
+{
+  "name": "start-ts-by",
+  "version": "0.5.0",
+  "description": "CLI tool for scaffolding projects from git repo or local folder templates",
+  "author": {
+    "name": "Roy Chuang",
+    "url": "https://github.com/royfw"
+  },
+  "homepage": "https://royfw.github.io/start-ts-by/",
+  "repository": "https://github.com/royfw/start-ts-by",
+  "license": "ISC",
+  "keywords": [
+    "scaffolding",
+    "project-template",
+    "typescript",
+    "cli",
+    "boilerplate",
+    "monorepo"
+  ]
+}

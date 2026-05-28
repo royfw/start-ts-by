@@ -1,0 +1,46 @@
+{
+  "skill_name": "start-ts-by",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to scaffold a new TypeScript project called 'my-dashboard' from the template royfw/starter-ts-app. Please set it up with git init and install the dependencies.",
+      "expected_output": "Claude should run npx start-ts-by with the correct template flag, project name, --git-init, and --npm-install flags. Should use --ni since all parameters are clear.",
+      "files": [],
+      "assertions": [
+        {"name": "uses_start_ts_by", "description": "Command uses npx start-ts-by", "check": "contains", "value": "start-ts-by"},
+        {"name": "includes_project_name", "description": "Command includes 'my-dashboard'", "check": "contains", "value": "my-dashboard"},
+        {"name": "includes_template_flag", "description": "Command uses -t or --template with royfw/starter-ts-app", "check": "regex", "value": "(-t|--template)\\s+royfw/starter-ts-app"},
+        {"name": "includes_git_init", "description": "Command includes --git-init", "check": "contains", "value": "--git-init"},
+        {"name": "includes_npm_install", "description": "Command includes --npm-install", "check": "contains", "value": "--npm-install"}
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Can you help me bootstrap a new project from my local template at ./projects/my-starter? I want to call it 'api-service' and it'll be part of a monorepo, so please remove the lock files and workspace config. Also I don't need the GitLab CI stuff.",
+      "expected_output": "Claude should run npx start-ts-by with local template path, --monorepo, --no-gitlab flags, and project name 'api-service'.",
+      "files": [],
+      "assertions": [
+        {"name": "uses_start_ts_by", "description": "Command uses npx start-ts-by", "check": "contains", "value": "start-ts-by"},
+        {"name": "includes_project_name", "description": "Command includes 'api-service'", "check": "contains", "value": "api-service"},
+        {"name": "uses_local_template", "description": "Command uses local template path", "check": "contains", "value": "./projects/my-starter"},
+        {"name": "includes_monorepo_flag", "description": "Command includes --monorepo", "check": "contains", "value": "--monorepo"},
+        {"name": "includes_no_gitlab_flag", "description": "Command includes --no-gitlab", "check": "contains", "value": "--no-gitlab"}
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Set up a new project called 'backend-api' using the Fastify template. I want to pass these variables: author.name should be 'Roy Chuang' and port should be 3000. Use non-interactive mode.",
+      "expected_output": "Claude should run npx start-ts-by with the Fastify template, --ni, --vars for author.name and port.",
+      "files": [],
+      "assertions": [
+        {"name": "uses_start_ts_by", "description": "Command uses npx start-ts-by", "check": "contains", "value": "start-ts-by"},
+        {"name": "includes_project_name", "description": "Command includes 'backend-api'", "check": "contains", "value": "backend-api"},
+        {"name": "uses_correct_template", "description": "Command uses Fastify template", "check": "regex", "value": "starter-ts-fastify"},
+        {"name": "includes_non_interactive", "description": "Command includes --ni or --no-interaction", "check": "regex", "value": "(--ni|--no-interaction)"},
+        {"name": "includes_vars_flag", "description": "Command includes --vars", "check": "contains", "value": "--vars"},
+        {"name": "includes_author_name_var", "description": "Variables include author.name=Roy Chuang", "check": "contains", "value": "author.name"},
+        {"name": "includes_port_var", "description": "Variables include port=3000", "check": "contains", "value": "port"}
+      ]
+    }
+  ]
+}
